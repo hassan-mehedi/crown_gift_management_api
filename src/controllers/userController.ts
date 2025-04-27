@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import env from "../config/env";
 import { removeSensitiveInfo } from "../utils/userUtils";
-import { ExtendedRequest } from "../types";
 import AppError from "../utils/appError";
 
 // Register a new user
