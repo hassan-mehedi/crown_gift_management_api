@@ -1,7 +1,10 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import companyRoutes from "./routes/companyRoutes";
+import userRoutes from "./routes/userRoutes";
+import stockItemRoutes from "./routes/stockItemRoutes";
+import receiverRoutes from "./routes/receiverRoutes";
+import giftRoutes from "./routes/giftRoutes";
 import errorHandler from "./middleware/errorHandler";
 
 // Load environment variables
@@ -16,13 +19,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api/companies", companyRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/stock-items", stockItemRoutes);
+app.use("/api/receivers", receiverRoutes);
+app.use("/api/gifts", giftRoutes);
 
 // Default route
 app.get("/", (req, res) => {
     res.json({
         status: "success",
-        message: "Company Profile API - Welcome!",
+        message: "Crown Gift Management API - Welcome!",
     });
 });
 

@@ -11,7 +11,7 @@ const validateRequest = (schema: AnyZodObject) => {
             });
             return next();
         } catch (error: any) {
-            const errorMessage = error.errors?.map((err: any) => err.message).join(", ") || "Validation failed";
+            const errorMessage = error.errors?.map((err: any) => err.message).join(", ") ?? "Validation failed";
             return res.status(400).json({
                 status: "error",
                 message: errorMessage,

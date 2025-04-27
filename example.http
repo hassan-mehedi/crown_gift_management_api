@@ -1,101 +1,219 @@
-@baseUrl = YOUR_BASE_URL_HERE
-@apiToken = YOUR_API_TOKEN_HERE
+### Variables
+@baseUrl = http://localhost:5000/api
+# MANUAL: Replace this with the actual token after login
+@authToken = your_jwt_auth_token_here
 
-### Get welcome message
-GET {{baseUrl}}
-
-### Get all companies (public)
-GET {{baseUrl}}/api/companies
+### User Registration
+# @name register
+POST {{baseUrl}}/users/register
 Content-Type: application/json
-
-### Get all companies with pagination (public)
-GET {{baseUrl}}/api/companies?page=1&limit=10
-Content-Type: application/json
-
-### Get company by code (public)
-GET {{baseUrl}}/api/companies/AAPL
-Content-Type: application/json
-
-### Create a new company (protected)
-POST {{baseUrl}}/api/companies
-Content-Type: application/json
-Authorization: Bearer {{apiToken}}
 
 {
-  "code": "GOOG",
-  "name": "Google LLC",
-  "description": "Technology company specializing in Internet-related services and products",
-  "type": "Corporation",
-  "status": "Active",
-  "image": "https://example.com/google-logo.png",
-  "alternatives": ["Alphabet Inc.", "Google"],
-  "origin": "USA",
-  "source": "Manual Entry",
-  "tags": ["search", "advertising", "cloud", "android"],
-  "brands": ["Android", "Gmail", "YouTube", "Chrome"]
+    "name": "Test User",
+    "email": "test@example.com",
+    "department": "IT",
+    "phone": "1234567890",
+    "password": "password123",
+    "designation": "Developer"
 }
 
-### Create multiple companies at once (protected)
-POST {{baseUrl}}/api/companies
+### User Login
+# After successful login, copy the token from the response and update the @authToken variable above
+POST {{baseUrl}}/users/login
 Content-Type: application/json
-Authorization: Bearer {{apiToken}}
+
+{
+    "phone": "1234567890",
+    "password": "password123"
+}
+
+### Get Current User
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{authToken}}
+
+### Get All Users
+GET {{baseUrl}}/users
+
+### Get User by Phone
+GET {{baseUrl}}/users/1234567890
+
+### Update User
+PATCH {{baseUrl}}/users/1234567890
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "name": "Updated User",
+    "department": "Engineering"
+}
+
+### Delete User
+DELETE {{baseUrl}}/users/1234567890
+Authorization: Bearer {{authToken}}
+
+### ---------------------- STOCK ITEMS ---------------------- ###
+
+### Get All Stock Items
+GET {{baseUrl}}/stock-items
+
+### Get Stock Item by ID
+GET {{baseUrl}}/stock-items/{{stockItemId}}
+
+### Create Stock Item
+# @name createStockItem
+POST {{baseUrl}}/stock-items
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "name": "Laptop",
+    "quantity": 10,
+    "storage": "Warehouse A",
+    "totalCost": 12000,
+    "picture": "laptop.jpg",
+    "date": "2023-06-15"
+}
+
+### Store Stock Item ID
+@stockItemId = {{createStockItem.response.body.data.stockItem._id}}
+
+### Update Stock Item
+PATCH {{baseUrl}}/stock-items/{{stockItemId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "quantity": 15,
+    "totalCost": 15000
+}
+
+### Delete Stock Item
+DELETE {{baseUrl}}/stock-items/{{stockItemId}}
+Authorization: Bearer {{authToken}}
+
+### Create Multiple Stock Items
+POST {{baseUrl}}/stock-items
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
 
 [
-  {
-    "code": "MSFT",
-    "name": "Microsoft Corporation",
-    "description": "Technology company developing software and hardware",
-    "type": "Corporation",
-    "status": "Active",
-    "image": "https://example.com/microsoft-logo.png",
-    "alternatives": ["MS", "MSFT"],
-    "origin": "USA",
-    "source": "Manual Entry",
-    "tags": ["windows", "office", "cloud", "azure"],
-    "brands": ["Windows", "Office", "Xbox", "Azure"]
-  },
-  {
-    "code": "META",
-    "name": "Meta Platforms, Inc.",
-    "description": "Social media and technology company",
-    "type": "Corporation",
-    "status": "Active",
-    "image": "https://example.com/meta-logo.png",
-    "alternatives": ["Facebook Inc.", "FB"],
-    "origin": "USA",
-    "source": "Manual Entry",
-    "tags": ["social", "metaverse", "facebook", "instagram"],
-    "brands": ["Facebook", "Instagram", "WhatsApp", "Oculus"]
-  }
+    {
+        "name": "Mouse",
+        "quantity": 20,
+        "storage": "Warehouse B",
+        "totalCost": 1000,
+        "date": "2023-06-15"
+    },
+    {
+        "name": "Keyboard",
+        "quantity": 15,
+        "storage": "Warehouse B",
+        "totalCost": 1500,
+        "date": "2023-06-15"
+    }
 ]
 
-### Update a company (protected - supports upsert)
-PATCH {{baseUrl}}/api/companies/GOOG
+### ---------------------- RECEIVERS ---------------------- ###
+
+### Get All Receivers
+GET {{baseUrl}}/receivers
+
+### Get Receiver by ID
+GET {{baseUrl}}/receivers/{{receiverId}}
+
+### Get Receiver by Phone
+GET {{baseUrl}}/receivers/phone/9876543210
+
+### Create Receiver
+# @name createReceiver
+POST {{baseUrl}}/receivers
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
-Authorization: Bearer {{apiToken}}
 
 {
-  "name": "Alphabet Inc.",
-  "description": "Updated description for Google's parent company",
-  "alternatives": ["Google LLC", "Google"],
-  "tags": ["search", "advertising", "AI", "parent company"],
-  "brands": ["Android", "Gmail", "YouTube", "Chrome", "Waymo"]
+    "name": "John Doe",
+    "phone": "9876543210",
+    "email": "john@example.com",
+    "department": "Marketing"
 }
 
-### Create a new company via upsert (if code doesn't exist)
-PATCH {{baseUrl}}/api/companies/NFLX
+### Store Receiver ID
+@receiverId = {{createReceiver.response.body.data.receiver._id}}
+
+### Update Receiver
+PATCH {{baseUrl}}/receivers/{{receiverId}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
-Authorization: Bearer {{apiToken}}
 
 {
-  "name": "Netflix, Inc.",
-  "description": "Entertainment company specializing in streaming services",
-  "type": "Corporation",
-  "status": "Active",
-  "image": "https://example.com/netflix-logo.png",
-  "alternatives": ["NFLX", "Netflix"],
-  "origin": "USA",
-  "source": "Manual Entry",
-  "tags": ["streaming", "entertainment", "movies", "series"],
-  "brands": ["Netflix Originals", "Netflix Studios"]
+    "name": "John Smith",
+    "department": "Sales"
 }
+
+### Delete Receiver
+DELETE {{baseUrl}}/receivers/{{receiverId}}
+Authorization: Bearer {{authToken}}
+
+### Create Multiple Receivers
+POST {{baseUrl}}/receivers
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+[
+    {
+        "name": "Jane Doe",
+        "phone": "9876543211",
+        "email": "jane@example.com",
+        "department": "HR"
+    },
+    {
+        "name": "Bob Smith",
+        "phone": "9876543212",
+        "email": "bob@example.com",
+        "department": "Finance"
+    }
+]
+
+### ---------------------- GIFTS ---------------------- ###
+
+### Get All Gifts
+GET {{baseUrl}}/gifts
+
+### Get Gift by ID
+GET {{baseUrl}}/gifts/{{giftId}}
+
+### Get Gifts by Receiver ID
+GET {{baseUrl}}/gifts/receiver/{{receiverId}}
+
+### Get Gifts by Stock Item ID
+GET {{baseUrl}}/gifts/stockItem/{{stockItemId}}
+
+### Create Gift
+# @name createGift
+POST {{baseUrl}}/gifts
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "stockItemId": "{{stockItemId}}",
+    "quantity": 2,
+    "receiverId": "{{receiverId}}",
+    "date": "2023-06-20"
+}
+
+### Store Gift ID
+@giftId = {{createGift.response.body.data.gift._id}}
+
+### Update Gift
+PATCH {{baseUrl}}/gifts/{{giftId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "quantity": 3,
+    "date": "2023-06-21"
+}
+
+### Delete Gift
+DELETE {{baseUrl}}/gifts/{{giftId}}
+Authorization: Bearer {{authToken}}

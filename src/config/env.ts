@@ -12,8 +12,8 @@ const env = cleanEnv(process.env, {
     // MongoDB connection
     MONGODB_URI: str({ desc: "MongoDB connection string" }),
 
-    // API token
-    API_TOKEN: str({ desc: "API token" }),
+    // JWT Secret for authentication
+    JWT_SECRET: str({ desc: "JWT secret key", default: "your_jwt_secret_key_here" }),
 });
 
 export default env;

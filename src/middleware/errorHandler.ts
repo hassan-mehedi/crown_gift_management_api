@@ -1,20 +1,23 @@
 import { Request, Response, NextFunction } from "express";
+import AppError from "../utils/appError";
 
-interface AppError extends Error {
-    statusCode?: number;
-    status?: string;
-    isOperational?: boolean;
-}
-
-const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
     // Default values
-    err.statusCode = err.statusCode ?? 500;
-    err.status = err.status ?? "error";
+    let statusCode = 500;
+    let status = "error";
+    let isOperational = false;
+
+    // If it's our custom AppError, use its properties
+    if (err instanceof AppError) {
+        statusCode = err.statusCode;
+        status = err.status;
+        isOperational = err.isOperational;
+    }
 
     // Different response for development and production environment
     if (process.env.NODE_ENV === "development") {
-        return res.status(err.statusCode).json({
-            status: err.status,
+        return res.status(statusCode).json({
+            status,
             error: err,
             message: err.message,
             stack: err.stack,
@@ -22,10 +25,10 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
     }
 
     // Production error response
-    if (err.isOperational) {
+    if (isOperational) {
         // Operational, trusted error: send message to client
-        return res.status(err.statusCode).json({
-            status: err.status,
+        return res.status(statusCode).json({
+            status,
             message: err.message,
         });
     }

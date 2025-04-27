@@ -1,12 +1,9 @@
 import { Response, NextFunction } from "express";
 import { ExtendedRequest } from "../types";
-import dotenv from "dotenv";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import env from "../config/env";
 
-dotenv.config();
-
-const API_TOKEN = process.env.API_TOKEN || "your_secret_api_token_here";
-
-const authenticateToken = (req: ExtendedRequest, res: Response, next: NextFunction) => {
+const authenticateJWT = (req: ExtendedRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     const token = authHeader?.split(" ")[1];
 
@@ -17,15 +14,17 @@ const authenticateToken = (req: ExtendedRequest, res: Response, next: NextFuncti
         });
     }
 
-    if (token !== API_TOKEN) {
+    try {
+        const decoded = jwt.verify(token, env.JWT_SECRET);
+        req.user = decoded as JwtPayload;
+        req.isAuthenticated = true;
+        next();
+    } catch (error: any) {
         return res.status(403).json({
             status: "error",
-            message: "Invalid authentication token",
+            message: error.message ?? "Invalid or expired token",
         });
     }
-
-    req.isAuthenticated = true;
-    next();
 };
 
-export default authenticateToken;
+export default authenticateJWT;
