@@ -1,12 +1,12 @@
-# Company Profile API
+# Crown Gift Management API
 
-This is a RESTful API for managing company profiles built with Node.js, Express, MongoDB, TypeScript, and Zod validation.
+This is a RESTful API for managing gifts built with Node.js, Express, MongoDB, TypeScript, and Zod validation.
 
 ## Features
 
--   CRUD operations for company data
+-   CRUD operations for gifts, stock items, and receivers
+-   User authentication using JWT
 -   Data validation using Zod
--   Authentication using token-based auth
 -   TypeScript for type safety
 -   MongoDB with Mongoose for data storage
 
@@ -28,8 +28,9 @@ npm install
 
 ```
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/company_profile
-API_TOKEN=your_secret_api_token_here
+MONGODB_URI=mongodb://localhost:27017/crown_gift_management
+JWT_SECRET=your_jwt_secret_here
+NODE_ENV=development
 ```
 
 ## Running the Application
@@ -49,96 +50,78 @@ npm start
 
 ## API Endpoints
 
-### Public Routes
+### User Routes
 
--   `GET /api/companies` - Get all companies with pagination
-    -   Query parameters: `page`, `limit`
--   `GET /api/companies/:code` - Get a single company by code
+-   `POST /api/users/register` - Register a new user
+-   `POST /api/users/login` - Login and get token
 
-### Private Routes (Require Authorization)
+### Stock Item Routes
 
-For private routes, include the API token in the Authorization header:
+-   `GET /api/stock-items` - Get all stock items with pagination
+-   `GET /api/stock-items/:id` - Get a single stock item by ID
+-   `POST /api/stock-items` - Create a new stock item (protected)
+-   `PATCH /api/stock-items/:id` - Update a stock item (protected)
+-   `DELETE /api/stock-items/:id` - Delete a stock item (protected)
+
+### Receiver Routes
+
+-   `GET /api/receivers` - Get all receivers with pagination
+-   `GET /api/receivers/:id` - Get a single receiver by ID
+-   `POST /api/receivers` - Create a new receiver (protected)
+-   `PATCH /api/receivers/:id` - Update a receiver (protected)
+-   `DELETE /api/receivers/:id` - Delete a receiver (protected)
+
+### Gift Routes
+
+-   `GET /api/gifts` - Get all gifts with pagination
+-   `GET /api/gifts/:id` - Get a single gift by ID
+-   `GET /api/gifts/receiver/:receiverId` - Get gifts by receiver ID
+-   `GET /api/gifts/stockItem/:stockItemId` - Get gifts by stock item ID
+-   `POST /api/gifts` - Create a new gift (protected)
+-   `PATCH /api/gifts/:id` - Update a gift (protected)
+-   `DELETE /api/gifts/:id` - Delete a gift (protected)
+
+## Protected Routes
+
+For protected routes, include a valid JWT token in the Authorization header:
 
 ```
-Authorization: Bearer your_secret_api_token_here
+Authorization: Bearer your_jwt_token_here
 ```
 
--   `PATCH /api/companies/:code` - Update a company
--   `POST /api/companies` - Create one or multiple companies
+## Data Models
 
-## Request/Response Examples
+### Stock Item
 
-### Get Companies (with pagination)
-
-```
-GET /api/companies?page=1&limit=10
-```
-
-### Get Single Company
-
-```
-GET /api/companies/ABC123
-```
-
-### Update Company
-
-```
-PATCH /api/companies/ABC123
-Content-Type: application/json
-Authorization: Bearer your_secret_api_token_here
-
+```json
 {
-  "name": "Updated Company Name",
-  "status": "active"
+    "name": "Gift Item Name",
+    "quantity": 10,
+    "storage": "Storage Location",
+    "totalCost": 500,
+    "picture": "image_url.jpg",
+    "date": "2023-01-01T00:00:00.000Z"
 }
 ```
 
-### Create Single Company
+### Receiver
 
-```
-POST /api/companies
-Content-Type: application/json
-Authorization: Bearer your_secret_api_token_here
-
+```json
 {
-  "code": "ABC123",
-  "name": "Test Company",
-  "type": "Software",
-  "status": "active",
-  "description": "This is a test company",
-  "image": "https://example.com/image.jpg",
-  "alternatives": "Alternative solutions",
-  "tags": "software, tech, nodejs"
+    "name": "Receiver Name",
+    "phone": "1234567890",
+    "email": "receiver@example.com",
+    "department": "Department Name"
 }
 ```
 
-### Create Multiple Companies
+### Gift
 
-```
-POST /api/companies
-Content-Type: application/json
-Authorization: Bearer your_secret_api_token_here
-
-[
-  {
-    "code": "ABC123",
-    "name": "Company 1",
-    "type": "Software",
-    "status": "active",
-    "description": "This is company 1",
-    "image": "https://example.com/image1.jpg",
-    "alternatives": "Alternative solutions 1",
-    "tags": "software, tech"
-  },
-  {
-    "code": "DEF456",
-    "name": "Company 2",
-    "type": "Hardware",
-    "status": "inactive",
-    "description": "This is company 2",
-    "image": "https://example.com/image2.jpg",
-    "alternatives": "Alternative solutions 2",
-    "tags": "hardware, tech"
-  }
-]
+```json
+{
+    "stockItemId": "stock_item_id_here",
+    "quantity": 1,
+    "receiverId": "receiver_id_here",
+    "date": "2023-01-01T00:00:00.000Z"
+}
 ```
