@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 export const getAllGifts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 10;
+        const limit = parseInt(req.query.limit as string) || 100;
         const skip = (page - 1) * limit;
 
         const gifts = await GiftModel.find().populate("stockItemId").populate("receiverId").skip(skip).limit(limit);
@@ -63,7 +63,7 @@ export const getGiftsByReceiverId = async (req: Request, res: Response, next: Ne
     try {
         const { receiverId } = req.params;
         const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 10;
+        const limit = parseInt(req.query.limit as string) || 100;
         const skip = (page - 1) * limit;
 
         if (!mongoose.Types.ObjectId.isValid(receiverId)) {
@@ -102,7 +102,7 @@ export const getGiftsByStockItemId = async (req: Request, res: Response, next: N
     try {
         const { stockItemId } = req.params;
         const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 10;
+        const limit = parseInt(req.query.limit as string) || 100;
         const skip = (page - 1) * limit;
 
         if (!mongoose.Types.ObjectId.isValid(stockItemId)) {
