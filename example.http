@@ -3,6 +3,8 @@
 # MANUAL: Replace this with the actual token after login
 @authToken = your_jwt_auth_token_here
 
+### ---------------------- USERS ---------------------- ###
+
 ### User Registration
 # @name register
 POST {{baseUrl}}/users/register
@@ -19,6 +21,7 @@ Content-Type: application/json
 
 ### User Login
 # After successful login, copy the token from the response and update the @authToken variable above
+# @name login
 POST {{baseUrl}}/users/login
 Content-Type: application/json
 
@@ -27,12 +30,14 @@ Content-Type: application/json
     "password": "password123"
 }
 
-### Get Current User
-GET {{baseUrl}}/users/me
-Authorization: Bearer {{authToken}}
+### Store Auth Token
+@authToken = {{login.response.body.data.token}}
 
 ### Get All Users
 GET {{baseUrl}}/users
+
+### Get All Users with Pagination
+GET {{baseUrl}}/users?page=1&limit=10
 
 ### Get User by Phone
 GET {{baseUrl}}/users/1234567890
@@ -56,6 +61,9 @@ Authorization: Bearer {{authToken}}
 ### Get All Stock Items
 GET {{baseUrl}}/stock-items
 
+### Get All Stock Items with Pagination
+GET {{baseUrl}}/stock-items?page=1&limit=10
+
 ### Get Stock Item by ID
 GET {{baseUrl}}/stock-items/{{stockItemId}}
 
@@ -76,20 +84,6 @@ Content-Type: application/json
 
 ### Store Stock Item ID
 @stockItemId = {{createStockItem.response.body.data.stockItem._id}}
-
-### Update Stock Item
-PATCH {{baseUrl}}/stock-items/{{stockItemId}}
-Authorization: Bearer {{authToken}}
-Content-Type: application/json
-
-{
-    "quantity": 15,
-    "totalCost": 15000
-}
-
-### Delete Stock Item
-DELETE {{baseUrl}}/stock-items/{{stockItemId}}
-Authorization: Bearer {{authToken}}
 
 ### Create Multiple Stock Items
 POST {{baseUrl}}/stock-items
@@ -113,10 +107,94 @@ Content-Type: application/json
     }
 ]
 
+### Update Stock Item
+PATCH {{baseUrl}}/stock-items/{{stockItemId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "quantity": 15,
+    "totalCost": 15000
+}
+
+### Delete Stock Item
+DELETE {{baseUrl}}/stock-items/{{stockItemId}}
+Authorization: Bearer {{authToken}}
+
+### ---------------------- STOCK ENTRIES ---------------------- ###
+
+### Get All Stock Entries
+GET {{baseUrl}}/stock-entries
+
+### Get All Stock Entries with Pagination
+GET {{baseUrl}}/stock-entries?page=1&limit=10
+
+### Get Stock Entry by ID
+GET {{baseUrl}}/stock-entries/{{stockEntryId}}
+
+### Create Stock Entry
+# @name createStockEntry
+POST {{baseUrl}}/stock-entries
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "stockItemId": "{{stockItemId}}",
+    "quantity": 50,
+    "date": "2023-06-20T10:30:00.000Z"
+}
+
+### Store Stock Entry ID
+@stockEntryId = {{createStockEntry.response.body.data.stockEntry._id}}
+
+### Create Multiple Stock Entries
+POST {{baseUrl}}/stock-entries
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+[
+    {
+        "stockItemId": "{{stockItemId}}",
+        "quantity": 25,
+        "date": "2023-06-20T10:30:00.000Z"
+    },
+    {
+        "stockItemId": "{{stockItemId}}",
+        "quantity": 30,
+        "date": "2023-06-21T11:30:00.000Z"
+    }
+]
+
+### Update Stock Entry
+PATCH {{baseUrl}}/stock-entries/{{stockEntryId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "quantity": 75,
+    "date": "2023-06-22T12:00:00.000Z"
+}
+
+### Delete Stock Entry
+DELETE {{baseUrl}}/stock-entries/{{stockEntryId}}
+Authorization: Bearer {{authToken}}
+
+### Get Stock Entries by Stock Item ID
+GET {{baseUrl}}/stock-entries/stock-item/{{stockItemId}}
+
+### Get Stock Entries by Stock Item ID with Pagination
+GET {{baseUrl}}/stock-entries/stock-item/{{stockItemId}}?page=1&limit=5
+
+### Get Stock Entry Count for Stock Item
+GET {{baseUrl}}/stock-entries/stock-item/{{stockItemId}}/count
+
 ### ---------------------- RECEIVERS ---------------------- ###
 
 ### Get All Receivers
 GET {{baseUrl}}/receivers
+
+### Get All Receivers with Pagination
+GET {{baseUrl}}/receivers?page=1&limit=10
 
 ### Get Receiver by ID
 GET {{baseUrl}}/receivers/{{receiverId}}
@@ -140,20 +218,6 @@ Content-Type: application/json
 ### Store Receiver ID
 @receiverId = {{createReceiver.response.body.data.receiver._id}}
 
-### Update Receiver
-PATCH {{baseUrl}}/receivers/{{receiverId}}
-Authorization: Bearer {{authToken}}
-Content-Type: application/json
-
-{
-    "name": "John Smith",
-    "department": "Sales"
-}
-
-### Delete Receiver
-DELETE {{baseUrl}}/receivers/{{receiverId}}
-Authorization: Bearer {{authToken}}
-
 ### Create Multiple Receivers
 POST {{baseUrl}}/receivers
 Authorization: Bearer {{authToken}}
@@ -174,10 +238,27 @@ Content-Type: application/json
     }
 ]
 
+### Update Receiver
+PATCH {{baseUrl}}/receivers/{{receiverId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "name": "John Smith",
+    "department": "Sales"
+}
+
+### Delete Receiver
+DELETE {{baseUrl}}/receivers/{{receiverId}}
+Authorization: Bearer {{authToken}}
+
 ### ---------------------- GIFTS ---------------------- ###
 
 ### Get All Gifts
 GET {{baseUrl}}/gifts
+
+### Get All Gifts with Pagination
+GET {{baseUrl}}/gifts?page=1&limit=10
 
 ### Get Gift by ID
 GET {{baseUrl}}/gifts/{{giftId}}
@@ -185,8 +266,14 @@ GET {{baseUrl}}/gifts/{{giftId}}
 ### Get Gifts by Receiver ID
 GET {{baseUrl}}/gifts/receiver/{{receiverId}}
 
+### Get Gifts by Receiver ID with Pagination
+GET {{baseUrl}}/gifts/receiver/{{receiverId}}?page=1&limit=10
+
 ### Get Gifts by Stock Item ID
 GET {{baseUrl}}/gifts/stockItem/{{stockItemId}}
+
+### Get Gifts by Stock Item ID with Pagination
+GET {{baseUrl}}/gifts/stockItem/{{stockItemId}}?page=1&limit=10
 
 ### Create Gift
 # @name createGift

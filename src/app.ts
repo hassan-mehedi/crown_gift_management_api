@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes";
 import stockItemRoutes from "./routes/stockItemRoutes";
+import stockEntryRoutes from "./routes/stockEntryRoutes";
 import receiverRoutes from "./routes/receiverRoutes";
 import giftRoutes from "./routes/giftRoutes";
 import errorHandler from "./middleware/errorHandler";
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/stock-items", stockItemRoutes);
+app.use("/api/stock-entries", stockEntryRoutes);
 app.use("/api/receivers", receiverRoutes);
 app.use("/api/gifts", giftRoutes);
 

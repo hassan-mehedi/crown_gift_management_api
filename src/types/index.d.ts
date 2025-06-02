@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { JwtPayload } from "jsonwebtoken";
+import { Types } from "mongoose";
 
 export interface User {
     name: string;
@@ -30,6 +31,12 @@ export interface Gift {
     stockItemId: string;
     quantity: number;
     receiverId: string;
+    date: Date;
+}
+
+export interface StockEntry {
+    stockItemId: string;
+    quantity: number;
     date: Date;
 }
 
