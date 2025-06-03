@@ -17,6 +17,7 @@ export interface StockItem {
     storage: string;
     totalCost: number;
     picture: string;
+    description?: string;
     date: Date;
 }
 
@@ -25,18 +26,21 @@ export interface Receiver {
     phone: string;
     email: string;
     department: string;
+    description?: string;
 }
 
 export interface Gift {
     stockItemId: string;
     quantity: number;
     receiverId: string;
+    description?: string;
     date: Date;
 }
 
 export interface StockEntry {
     stockItemId: string;
     quantity: number;
+    description?: string;
     date: Date;
 }
 

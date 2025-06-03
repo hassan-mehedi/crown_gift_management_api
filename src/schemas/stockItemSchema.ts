@@ -11,6 +11,7 @@ export const stockItemSchema = z.object({
         .string()
         .or(z.date())
         .transform(val => new Date(val)),
+    description: z.string().optional(),
 });
 
 // Schema for creating a single stock item
