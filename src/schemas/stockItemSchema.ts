@@ -5,8 +5,10 @@ export const stockItemSchema = z.object({
     name: z.string().min(1, "Name is required"),
     quantity: z.number().nonnegative("Quantity must be a non-negative number").default(0),
     storage: z.string().optional(),
-    totalCost: z.number().nonnegative("Total cost must be a non-negative number").default(0),
+    unitCost: z.number().nonnegative("Unit cost must be a non-negative number").default(0),
     picture: z.string().optional(),
+    vendorId: z.string().min(1, "Vendor ID is required"),
+    workOrderNumber: z.string().optional(),
     date: z
         .string()
         .or(z.date())

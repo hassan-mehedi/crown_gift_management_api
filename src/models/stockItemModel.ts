@@ -16,11 +16,19 @@ const stockItemSchema = new Schema<StockItemDocument>(
         storage: {
             type: String,
         },
-        totalCost: {
+        unitCost: {
             type: Number,
             default: 0,
         },
         picture: {
+            type: String,
+        },
+        vendorId: {
+            type: String,
+            required: true,
+            ref: "Vendor",
+        },
+        workOrderNumber: {
             type: String,
         },
         date: {

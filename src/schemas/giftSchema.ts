@@ -3,13 +3,15 @@ import { z } from "zod";
 // Schema for validating a single gift
 export const giftSchema = z.object({
     stockItemId: z.string().min(1, "Stock item ID is required"),
-    quantity: z.number().positive("Quantity must be a positive number"),
+    quantity: z.number().nonnegative("Quantity must be a non-negative number").default(0),
     receiverId: z.string().min(1, "Receiver ID is required"),
+    status: z.string().optional(),
+    comment: z.string().optional(),
+    approvalStatus: z.string().optional(),
     date: z
         .string()
         .or(z.date())
         .transform(val => new Date(val)),
-    description: z.string().optional(),
 });
 
 // Schema for creating a single gift

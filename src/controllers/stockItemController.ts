@@ -10,7 +10,7 @@ export const getAllStockItems = async (req: Request, res: Response, next: NextFu
         const limit = parseInt(req.query.limit as string) || 100;
         const skip = (page - 1) * limit;
 
-        const stockItems = await StockItemModel.find().skip(skip).limit(limit);
+        const stockItems = await StockItemModel.find().populate("vendorId").skip(skip).limit(limit);
 
         const totalStockItems = await StockItemModel.countDocuments();
         const totalPages = Math.ceil(totalStockItems / limit);
@@ -41,7 +41,7 @@ export const getStockItemById = async (req: Request, res: Response, next: NextFu
             throw new AppError("Invalid stock item ID", 400);
         }
 
-        const stockItem = await StockItemModel.findById(id);
+        const stockItem = await StockItemModel.findById(id).populate("vendorId");
 
         if (!stockItem) {
             throw new AppError(`Stock item with ID ${id} not found`, 404);

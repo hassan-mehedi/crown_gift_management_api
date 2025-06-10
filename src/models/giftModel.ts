@@ -19,6 +19,15 @@ const giftSchema = new Schema<GiftDocument>(
             required: true,
             ref: "Receiver",
         },
+        status: {
+            type: String,
+        },
+        comment: {
+            type: String,
+        },
+        approvalStatus: {
+            type: String,
+        },
         date: {
             type: Date,
             required: true,

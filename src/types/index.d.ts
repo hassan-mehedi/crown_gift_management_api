@@ -15,9 +15,10 @@ export interface StockItem {
     name: string;
     quantity: number;
     storage: string;
-    totalCost: number;
+    unitCost: number;
     picture: string;
-    description?: string;
+    vendorId: string;
+    workOrderNumber: string;
     date: Date;
 }
 
@@ -33,7 +34,9 @@ export interface Gift {
     stockItemId: string;
     quantity: number;
     receiverId: string;
-    description?: string;
+    status: string;
+    comment: string;
+    approvalStatus: string;
     date: Date;
 }
 
@@ -42,6 +45,12 @@ export interface StockEntry {
     quantity: number;
     description?: string;
     date: Date;
+}
+
+export interface Vendor {
+    name: string;
+    email: string;
+    phone: string;
 }
 
 export interface ExtendedRequest extends Request {
