@@ -304,3 +304,63 @@ Content-Type: application/json
 ### Delete Gift
 DELETE {{baseUrl}}/gifts/{{giftId}}
 Authorization: Bearer {{authToken}}
+
+### ---------------------- VENDORS ---------------------- ###
+
+### Get All Vendors
+GET {{baseUrl}}/vendors
+
+### Get All Vendors with Pagination
+GET {{baseUrl}}/vendors?page=1&limit=10
+
+### Get Vendor by Phone
+GET {{baseUrl}}/vendors/phone/1234567890
+
+### Get Vendor by ID
+GET {{baseUrl}}/vendors/id/{{vendorId}}
+
+### Create Vendor
+# @name createVendor
+POST {{baseUrl}}/vendors
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "name": "ABC Suppliers",
+    "phone": "1234567890",
+    "email": "contact@abcsuppliers.com",
+    "address": "123 Business Street, City",
+    "contactPerson": "John Manager"
+}
+
+### Store Vendor ID
+@vendorId = {{createVendor.response.body.data.vendor._id}}
+
+### Update Vendor by Phone
+PATCH {{baseUrl}}/vendors/phone/1234567890
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "name": "ABC Premium Suppliers",
+    "contactPerson": "Jane Manager",
+    "address": "456 Business Avenue, City"
+}
+
+### Update Vendor by ID
+PATCH {{baseUrl}}/vendors/id/{{vendorId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "email": "info@abcsuppliers.com",
+    "phone": "1234567891"
+}
+
+### Delete Vendor by Phone
+DELETE {{baseUrl}}/vendors/phone/1234567890
+Authorization: Bearer {{authToken}}
+
+### Delete Vendor by ID
+DELETE {{baseUrl}}/vendors/id/{{vendorId}}
+Authorization: Bearer {{authToken}}
