@@ -1,30 +1,30 @@
 import { Request, Response, NextFunction } from "express";
-import GiftModel from "../models/giftModel";
+import StockIssueModel from "../models/stockIssueModel";
 import StockItemModel from "../models/stockItemModel";
 import ReceiverModel from "../models/receiverModel";
 import AppError from "../utils/appError";
 import mongoose from "mongoose";
 
-// Get all gifts with pagination
-export const getAllGifts = async (req: Request, res: Response, next: NextFunction) => {
+// Get all stock issues with pagination
+export const getAllStockIssues = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 100;
         const skip = (page - 1) * limit;
 
-        const gifts = await GiftModel.find().populate("stockItemId").populate("receiverId").skip(skip).limit(limit);
+        const stockIssues = await StockIssueModel.find().populate("stockItemId").populate("receiverId").skip(skip).limit(limit);
 
-        const totalGifts = await GiftModel.countDocuments();
-        const totalPages = Math.ceil(totalGifts / limit);
+        const totalStockIssues = await StockIssueModel.countDocuments();
+        const totalPages = Math.ceil(totalStockIssues / limit);
 
         return res.status(200).json({
             status: "success",
             data: {
-                gifts,
+                stockIssues,
                 pagination: {
                     currentPage: page,
                     totalPages,
-                    totalItems: totalGifts,
+                    totalItems: totalStockIssues,
                     itemsPerPage: limit,
                 },
             },
@@ -34,32 +34,32 @@ export const getAllGifts = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-// Get a single gift by ID
-export const getGiftById = async (req: Request, res: Response, next: NextFunction) => {
+// Get a single stock issue by ID
+export const getStockIssueById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw new AppError("Invalid gift ID", 400);
+            throw new AppError("Invalid stock issue ID", 400);
         }
 
-        const gift = await GiftModel.findById(id).populate("stockItemId").populate("receiverId");
+        const stockIssue = await StockIssueModel.findById(id).populate("stockItemId").populate("receiverId");
 
-        if (!gift) {
-            throw new AppError(`Gift with ID ${id} not found`, 404);
+        if (!stockIssue) {
+            throw new AppError(`Stock issue with ID ${id} not found`, 404);
         }
 
         return res.status(200).json({
             status: "success",
-            data: { gift },
+            data: { stockIssue },
         });
     } catch (error) {
         next(error);
     }
 };
 
-// Get gifts by receiver ID
-export const getGiftsByReceiverId = async (req: Request, res: Response, next: NextFunction) => {
+// Get stock issues by receiver ID
+export const getStockIssuesByReceiverId = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { receiverId } = req.params;
         const page = parseInt(req.query.page as string) || 1;
@@ -76,18 +76,18 @@ export const getGiftsByReceiverId = async (req: Request, res: Response, next: Ne
             throw new AppError(`Receiver with ID ${receiverId} not found`, 404);
         }
 
-        const gifts = await GiftModel.find({ receiverId }).populate("stockItemId").skip(skip).limit(limit);
-        const totalGifts = await GiftModel.countDocuments({ receiverId });
-        const totalPages = Math.ceil(totalGifts / limit);
+        const stockIssues = await StockIssueModel.find({ receiverId }).populate("stockItemId").skip(skip).limit(limit);
+        const totalStockIssues = await StockIssueModel.countDocuments({ receiverId });
+        const totalPages = Math.ceil(totalStockIssues / limit);
 
         return res.status(200).json({
             status: "success",
             data: {
-                gifts,
+                stockIssues,
                 pagination: {
                     currentPage: page,
                     totalPages,
-                    totalItems: totalGifts,
+                    totalItems: totalStockIssues,
                     itemsPerPage: limit,
                 },
             },
@@ -97,8 +97,8 @@ export const getGiftsByReceiverId = async (req: Request, res: Response, next: Ne
     }
 };
 
-// Get gifts by stock item ID
-export const getGiftsByStockItemId = async (req: Request, res: Response, next: NextFunction) => {
+// Get stock issues by stock item ID
+export const getStockIssuesByStockItemId = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { stockItemId } = req.params;
         const page = parseInt(req.query.page as string) || 1;
@@ -115,18 +115,18 @@ export const getGiftsByStockItemId = async (req: Request, res: Response, next: N
             throw new AppError(`Stock item with ID ${stockItemId} not found`, 404);
         }
 
-        const gifts = await GiftModel.find({ stockItemId }).populate("stockItemId").skip(skip).limit(limit);
-        const totalGifts = await GiftModel.countDocuments({ stockItemId });
-        const totalPages = Math.ceil(totalGifts / limit);
+        const stockIssues = await StockIssueModel.find({ stockItemId }).populate("stockItemId").skip(skip).limit(limit);
+        const totalStockIssues = await StockIssueModel.countDocuments({ stockItemId });
+        const totalPages = Math.ceil(totalStockIssues / limit);
 
         return res.status(200).json({
             status: "success",
             data: {
-                gifts,
+                stockIssues,
                 pagination: {
                     currentPage: page,
                     totalPages,
-                    totalItems: totalGifts,
+                    totalItems: totalStockIssues,
                     itemsPerPage: limit,
                 },
             },
@@ -136,61 +136,61 @@ export const getGiftsByStockItemId = async (req: Request, res: Response, next: N
     }
 };
 
-// Create a new gift
-export const createGift = async (req: Request, res: Response, next: NextFunction) => {
+// Create a new stock issue
+export const createStockIssue = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const giftData = req.body;
+        const stockIssueData = req.body;
 
         // Check if stock item exists
-        if (!mongoose.Types.ObjectId.isValid(giftData.stockItemId)) {
+        if (!mongoose.Types.ObjectId.isValid(stockIssueData.stockItemId)) {
             throw new AppError("Invalid stock item ID", 400);
         }
-        const stockItem = await StockItemModel.findById(giftData.stockItemId);
+        const stockItem = await StockItemModel.findById(stockIssueData.stockItemId);
         if (!stockItem) {
-            throw new AppError(`Stock item with ID ${giftData.stockItemId} not found`, 404);
+            throw new AppError(`Stock item with ID ${stockIssueData.stockItemId} not found`, 404);
         }
 
         // Check if receiver exists
-        if (!mongoose.Types.ObjectId.isValid(giftData.receiverId)) {
+        if (!mongoose.Types.ObjectId.isValid(stockIssueData.receiverId)) {
             throw new AppError("Invalid receiver ID", 400);
         }
-        const receiver = await ReceiverModel.findById(giftData.receiverId);
+        const receiver = await ReceiverModel.findById(stockIssueData.receiverId);
         if (!receiver) {
-            throw new AppError(`Receiver with ID ${giftData.receiverId} not found`, 404);
+            throw new AppError(`Receiver with ID ${stockIssueData.receiverId} not found`, 404);
         }
 
         // Check if there's enough stock
-        if (stockItem.quantity < giftData.quantity) {
-            throw new AppError(`Not enough stock. Available: ${stockItem.quantity}, Requested: ${giftData.quantity}`, 400);
+        if (stockItem.quantity < stockIssueData.quantity) {
+            throw new AppError(`Not enough stock. Available: ${stockItem.quantity}, Requested: ${stockIssueData.quantity}`, 400);
         }
 
-        // Create gift without using transaction
-        const gift = await GiftModel.create(giftData);
+        // Create stock issue without using transaction
+        const stockIssue = await StockIssueModel.create(stockIssueData);
 
         // Update stock quantity
-        await StockItemModel.findByIdAndUpdate(giftData.stockItemId, { $inc: { quantity: -giftData.quantity } });
+        await StockItemModel.findByIdAndUpdate(stockIssueData.stockItemId, { $inc: { quantity: -stockIssueData.quantity } });
 
         return res.status(201).json({
             status: "success",
-            data: { gift },
+            data: { stockIssue },
         });
     } catch (error) {
         next(error);
     }
 };
 
-// Helper functions for updateGift
-const validateGiftId = async (id: string) => {
+// Helper functions for updateStockIssue
+const validateStockIssueId = async (id: string) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        throw new AppError("Invalid gift ID", 400);
+        throw new AppError("Invalid stock issue ID", 400);
     }
 
-    const gift = await GiftModel.findById(id);
-    if (!gift) {
-        throw new AppError(`Gift with ID ${id} not found`, 404);
+    const stockIssue = await StockIssueModel.findById(id);
+    if (!stockIssue) {
+        throw new AppError(`Stock issue with ID ${id} not found`, 404);
     }
 
-    return gift;
+    return stockIssue;
 };
 
 const validateStockItem = async (stockItemId: string, existingStockItemId: string) => {
@@ -235,74 +235,74 @@ const checkStockAvailability = async (stockItemId: string, requestedQuantity: nu
     return stockItem;
 };
 
-// Update a gift
-export const updateGift = async (req: Request, res: Response, next: NextFunction) => {
+// Update a stock issue
+export const updateStockIssue = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
 
-        // Validate and get existing gift
-        const existingGift = await validateGiftId(id);
+        // Validate and get existing stock issue
+        const existingStockIssue = await validateStockIssueId(id);
 
         // Validate related entities
         await Promise.all([
-            validateStockItem(updateData.stockItemId, existingGift.stockItemId),
-            validateReceiver(updateData.receiverId, existingGift.receiverId),
+            validateStockItem(updateData.stockItemId, existingStockIssue.stockItemId),
+            validateReceiver(updateData.receiverId, existingStockIssue.receiverId),
         ]);
 
         // Check stock if quantity is being updated
-        if (updateData.quantity && updateData.quantity !== existingGift.quantity) {
-            const stockItemId = updateData.stockItemId ?? existingGift.stockItemId;
-            await checkStockAvailability(stockItemId, updateData.quantity, existingGift.quantity);
+        if (updateData.quantity && updateData.quantity !== existingStockIssue.quantity) {
+            const stockItemId = updateData.stockItemId ?? existingStockIssue.stockItemId;
+            await checkStockAvailability(stockItemId, updateData.quantity, existingStockIssue.quantity);
         }
 
-        // Update the gift
-        const gift = await GiftModel.findByIdAndUpdate(id, updateData, {
+        // Update the stock issue
+        const stockIssue = await StockIssueModel.findByIdAndUpdate(id, updateData, {
             new: true,
             runValidators: true,
         });
 
         // If quantity changed, update stock
-        if (updateData.quantity && updateData.quantity !== existingGift.quantity) {
-            const stockItemId = updateData.stockItemId ?? existingGift.stockItemId;
-            const quantityDifference = existingGift.quantity - updateData.quantity;
+        if (updateData.quantity && updateData.quantity !== existingStockIssue.quantity) {
+            const stockItemId = updateData.stockItemId ?? existingStockIssue.stockItemId;
+            const quantityDifference = existingStockIssue.quantity - updateData.quantity;
 
             await StockItemModel.findByIdAndUpdate(stockItemId, { $inc: { quantity: quantityDifference } });
         }
 
         return res.status(200).json({
             status: "success",
-            data: { gift },
+            data: { stockIssue },
         });
     } catch (error) {
         next(error);
     }
 };
 
-// Delete a gift
-export const deleteGift = async (req: Request, res: Response, next: NextFunction) => {
+// Delete a stock issue
+export const deleteStockIssue = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw new AppError("Invalid gift ID", 400);
+            throw new AppError("Invalid stock issue ID", 400);
         }
 
-        const gift = await GiftModel.findById(id);
+        const stockIssue = await StockIssueModel.findById(id);
 
-        if (!gift) {
-            throw new AppError(`Gift with ID ${id} not found`, 404);
+        if (!stockIssue) {
+            throw new AppError(`Stock issue with ID ${id} not found`, 404);
         }
 
-        // Delete the gift
-        await GiftModel.findByIdAndDelete(id);
+        // Delete the stock issue
+        await StockIssueModel.findByIdAndDelete(id);
 
         // Restore stock quantity
-        await StockItemModel.findByIdAndUpdate(gift.stockItemId, { $inc: { quantity: gift.quantity } });
+        await StockItemModel.findByIdAndUpdate(stockIssue.stockItemId, { $inc: { quantity: stockIssue.quantity } });
 
         return res.status(200).json({
             status: "success",
-            message: "Gift deleted successfully",
+            message: "Stock issue deleted successfully",
         });
     } catch (error) {
         next(error);

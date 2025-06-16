@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { Gift } from "../types";
+import { StockIssue } from "../types";
 
-export interface GiftDocument extends Gift, Document {}
+export interface StockIssueDocument extends StockIssue, Document {}
 
-const giftSchema = new Schema<GiftDocument>(
+const stockIssueSchema = new Schema<StockIssueDocument>(
     {
         stockItemId: {
             type: String,
@@ -38,6 +38,6 @@ const giftSchema = new Schema<GiftDocument>(
     }
 );
 
-const GiftModel = mongoose.model<GiftDocument>("Gift", giftSchema);
+const StockIssueModel = mongoose.model<StockIssueDocument>("StockIssue", stockIssueSchema);
 
-export default GiftModel;
+export default StockIssueModel;

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// Schema for validating a single gift
-export const giftSchema = z.object({
+// Schema for validating a single stock issue
+export const stockIssueSchema = z.object({
     stockItemId: z.string().min(1, "Stock item ID is required"),
     quantity: z.number().nonnegative("Quantity must be a non-negative number").default(0),
     receiverId: z.string().min(1, "Receiver ID is required"),
@@ -14,40 +14,40 @@ export const giftSchema = z.object({
         .transform(val => new Date(val)),
 });
 
-// Schema for creating a single gift
-export const createGiftSchema = z.object({
-    body: giftSchema,
+// Schema for creating a single stock issue
+export const createStockIssueSchema = z.object({
+    body: stockIssueSchema,
 });
 
-// Schema for creating multiple gifts
-export const createGiftsSchema = z.object({
-    body: z.array(giftSchema),
+// Schema for creating multiple stock issues
+export const createStockIssuesSchema = z.object({
+    body: z.array(stockIssueSchema),
 });
 
-// Schema for updating a gift
-export const updateGiftSchema = z.object({
+// Schema for updating a stock issue
+export const updateStockIssueSchema = z.object({
     params: z.object({
-        id: z.string().min(1, "Gift ID is required"),
+        id: z.string().min(1, "Stock issue ID is required"),
     }),
-    body: giftSchema.partial(),
+    body: stockIssueSchema.partial(),
 });
 
-// Schema for getting a single gift
-export const getGiftSchema = z.object({
+// Schema for getting a single stock issue
+export const getStockIssueSchema = z.object({
     params: z.object({
-        id: z.string().min(1, "Gift ID is required"),
+        id: z.string().min(1, "Stock issue ID is required"),
     }),
 });
 
-// Schema for getting gifts by receiver ID
-export const getGiftsByReceiverSchema = z.object({
+// Schema for getting stock issues by receiver ID
+export const getStockIssuesByReceiverSchema = z.object({
     params: z.object({
         receiverId: z.string().min(1, "Receiver ID is required"),
     }),
 });
 
-// Schema for getting gifts by stock item ID
-export const getGiftsByStockItemSchema = z.object({
+// Schema for getting stock issues by stock item ID
+export const getStockIssuesByStockItemSchema = z.object({
     params: z.object({
         stockItemId: z.string().min(1, "Stock item ID is required"),
     }),

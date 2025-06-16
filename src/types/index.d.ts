@@ -30,7 +30,7 @@ export interface Receiver {
     description?: string;
 }
 
-export interface Gift {
+export interface StockIssue {
     stockItemId: string;
     quantity: number;
     receiverId: string;
@@ -40,7 +40,7 @@ export interface Gift {
     date: Date;
 }
 
-export interface StockEntry {
+export interface StockModification {
     stockItemId: string;
     quantity: number;
     description?: string;

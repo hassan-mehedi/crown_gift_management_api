@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// Schema for validating a single stock entry
-export const stockEntrySchema = z.object({
+// Schema for validating a single stock modification
+export const stockModificationSchema = z.object({
     stockItemId: z.string().min(1, "Stock item ID is required"),
     quantity: z.number().nonnegative("Quantity must be a non-negative number").default(0),
     date: z
@@ -11,33 +11,33 @@ export const stockEntrySchema = z.object({
     description: z.string().optional(),
 });
 
-// Schema for creating a single stock entry
-export const createStockEntrySchema = z.object({
-    body: stockEntrySchema,
+// Schema for creating a single stock modification
+export const createStockModificationSchema = z.object({
+    body: stockModificationSchema,
 });
 
-// Schema for creating multiple stock entries
-export const createStockEntriesSchema = z.object({
-    body: z.array(stockEntrySchema),
+// Schema for creating multiple stock modifications
+export const createStockModificationsSchema = z.object({
+    body: z.array(stockModificationSchema),
 });
 
-// Schema for updating a stock entry
-export const updateStockEntrySchema = z.object({
+// Schema for updating a stock modification
+export const updateStockModificationSchema = z.object({
     params: z.object({
-        id: z.string().min(1, "Stock entry ID is required"),
+        id: z.string().min(1, "Stock modification ID is required"),
     }),
-    body: stockEntrySchema.partial(),
+    body: stockModificationSchema.partial(),
 });
 
-// Schema for getting a single stock entry
-export const getStockEntrySchema = z.object({
+// Schema for getting a single stock modification
+export const getStockModificationSchema = z.object({
     params: z.object({
-        id: z.string().min(1, "Stock entry ID is required"),
+        id: z.string().min(1, "Stock modification ID is required"),
     }),
 });
 
-// Schema for getting stock entries by stock item ID
-export const getStockEntriesByStockItemSchema = z.object({
+// Schema for getting stock modifications by stock item ID
+export const getStockModificationsByStockItemSchema = z.object({
     params: z.object({
         stockItemId: z.string().min(1, "Stock item ID is required"),
     }),
@@ -53,8 +53,8 @@ export const getStockEntriesByStockItemSchema = z.object({
     }),
 });
 
-// Schema for getting stock entry count by stock item ID
-export const getStockEntryCountSchema = z.object({
+// Schema for getting stock modification count by stock item ID
+export const getStockModificationCountSchema = z.object({
     params: z.object({
         stockItemId: z.string().min(1, "Stock item ID is required"),
     }),
