@@ -1,7 +1,7 @@
 {
-    "name": "crown_gift_management",
+    "name": "crown_stock_issue_management",
     "version": "1.0.0",
-    "description": "This is a backend which has routes to manage crown gift management",
+    "description": "This is a backend which has routes to manage crown stock issue management",
     "main": "dist/index.js",
     "scripts": {
         "start": "node dist/index.js",

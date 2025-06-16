@@ -1,10 +1,10 @@
-# Crown Gift Management API
+# Crown Stock Issue Management API
 
-This is a RESTful API for managing gifts built with Node.js, Express, MongoDB, TypeScript, and Zod validation.
+This is a RESTful API for managing stock issues built with Node.js, Express, MongoDB, TypeScript, and Zod validation.
 
 ## Features
 
--   CRUD operations for gifts, stock items, and receivers
+-   CRUD operations for stock issues, stock items, and receivers
 -   User authentication using JWT
 -   Data validation using Zod
 -   TypeScript for type safety
@@ -28,7 +28,7 @@ npm install
 
 ```
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/crown_gift_management
+MONGODB_URI=mongodb://localhost:27017/crown_stock_issue_management
 JWT_SECRET=your_jwt_secret_here
 NODE_ENV=development
 ```
@@ -71,15 +71,15 @@ npm start
 -   `PATCH /api/receivers/:id` - Update a receiver (protected)
 -   `DELETE /api/receivers/:id` - Delete a receiver (protected)
 
-### Gift Routes
+### Stock Issue Routes
 
--   `GET /api/gifts` - Get all gifts with pagination
--   `GET /api/gifts/:id` - Get a single gift by ID
--   `GET /api/gifts/receiver/:receiverId` - Get gifts by receiver ID
--   `GET /api/gifts/stockItem/:stockItemId` - Get gifts by stock item ID
--   `POST /api/gifts` - Create a new gift (protected)
--   `PATCH /api/gifts/:id` - Update a gift (protected)
--   `DELETE /api/gifts/:id` - Delete a gift (protected)
+-   `GET /api/stockIssues` - Get all stock issues with pagination
+-   `GET /api/stockIssues/:id` - Get a single stock issue by ID
+-   `GET /api/stockIssues/receiver/:receiverId` - Get stock issues by receiver ID
+-   `GET /api/stockIssues/stockItem/:stockItemId` - Get stock issues by stock item ID
+-   `POST /api/stockIssues` - Create a new stock issue (protected)
+-   `PATCH /api/stockIssues/:id` - Update a stock issue (protected)
+-   `DELETE /api/stockIssues/:id` - Delete a stock issue (protected)
 
 ## Protected Routes
 
@@ -95,7 +95,7 @@ Authorization: Bearer your_jwt_token_here
 
 ```json
 {
-    "name": "Gift Item Name",
+    "name": "Stock Issue Item Name",
     "quantity": 10,
     "storage": "Storage Location",
     "totalCost": 500,
@@ -115,7 +115,7 @@ Authorization: Bearer your_jwt_token_here
 }
 ```
 
-### Gift
+### Stock Issue
 
 ```json
 {

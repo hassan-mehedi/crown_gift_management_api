@@ -121,20 +121,20 @@ Content-Type: application/json
 DELETE {{baseUrl}}/stock-items/{{stockItemId}}
 Authorization: Bearer {{authToken}}
 
-### ---------------------- STOCK ENTRIES ---------------------- ###
+### ---------------------- STOCK MODIFICATIONS ---------------------- ###
 
-### Get All Stock Entries
-GET {{baseUrl}}/stock-entries
+### Get All Stock Modifications
+GET {{baseUrl}}/stock-modifications
 
-### Get All Stock Entries with Pagination
-GET {{baseUrl}}/stock-entries?page=1&limit=10
+### Get All Stock Modifications with Pagination
+GET {{baseUrl}}/stock-modifications?page=1&limit=10
 
-### Get Stock Entry by ID
-GET {{baseUrl}}/stock-entries/{{stockEntryId}}
+### Get Stock Modification by ID
+GET {{baseUrl}}/stock-modifications/{{stockModificationId}}
 
-### Create Stock Entry
-# @name createStockEntry
-POST {{baseUrl}}/stock-entries
+### Create Stock Modification
+# @name createStockModification
+POST {{baseUrl}}/stock-modifications
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -144,11 +144,11 @@ Content-Type: application/json
     "date": "2023-06-20T10:30:00.000Z"
 }
 
-### Store Stock Entry ID
-@stockEntryId = {{createStockEntry.response.body.data.stockEntry._id}}
+### Store Stock Modification ID
+@stockModificationId = {{createStockModification.response.body.data.stockModification._id}}
 
-### Create Multiple Stock Entries
-POST {{baseUrl}}/stock-entries
+### Create Multiple Stock Modifications
+POST {{baseUrl}}/stock-modifications
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -165,8 +165,8 @@ Content-Type: application/json
     }
 ]
 
-### Update Stock Entry
-PATCH {{baseUrl}}/stock-entries/{{stockEntryId}}
+### Update Stock Modification
+PATCH {{baseUrl}}/stock-modifications/{{stockModificationId}}
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -175,18 +175,18 @@ Content-Type: application/json
     "date": "2023-06-22T12:00:00.000Z"
 }
 
-### Delete Stock Entry
-DELETE {{baseUrl}}/stock-entries/{{stockEntryId}}
+### Delete Stock Modification
+DELETE {{baseUrl}}/stock-modifications/{{stockModificationId}}
 Authorization: Bearer {{authToken}}
 
-### Get Stock Entries by Stock Item ID
-GET {{baseUrl}}/stock-entries/stock-item/{{stockItemId}}
+### Get Stock Modifications by Stock Item ID
+GET {{baseUrl}}/stock-modifications/stock-item/{{stockItemId}}
 
-### Get Stock Entries by Stock Item ID with Pagination
-GET {{baseUrl}}/stock-entries/stock-item/{{stockItemId}}?page=1&limit=5
+### Get Stock Modifications by Stock Item ID with Pagination
+GET {{baseUrl}}/stock-modifications/stock-item/{{stockItemId}}?page=1&limit=5
 
-### Get Stock Entry Count for Stock Item
-GET {{baseUrl}}/stock-entries/stock-item/{{stockItemId}}/count
+### Get Stock Modification Count for Stock Item
+GET {{baseUrl}}/stock-modifications/stock-item/{{stockItemId}}/count
 
 ### ---------------------- RECEIVERS ---------------------- ###
 
@@ -252,32 +252,32 @@ Content-Type: application/json
 DELETE {{baseUrl}}/receivers/{{receiverId}}
 Authorization: Bearer {{authToken}}
 
-### ---------------------- GIFTS ---------------------- ###
+### ---------------------- STOCK ISSUES ---------------------- ###
 
-### Get All Gifts
-GET {{baseUrl}}/gifts
+### Get All Stock Issues
+GET {{baseUrl}}/stockIssues
 
-### Get All Gifts with Pagination
-GET {{baseUrl}}/gifts?page=1&limit=10
+### Get All Stock Issues with Pagination
+GET {{baseUrl}}/stockIssues?page=1&limit=10
 
-### Get Gift by ID
-GET {{baseUrl}}/gifts/{{giftId}}
+### Get Stock Issue by ID
+GET {{baseUrl}}/stockIssues/{{stockIssueId}}
 
-### Get Gifts by Receiver ID
-GET {{baseUrl}}/gifts/receiver/{{receiverId}}
+### Get Stock Issues by Receiver ID
+GET {{baseUrl}}/stockIssues/receiver/{{receiverId}}
 
-### Get Gifts by Receiver ID with Pagination
-GET {{baseUrl}}/gifts/receiver/{{receiverId}}?page=1&limit=10
+### Get Stock Issues by Receiver ID with Pagination
+GET {{baseUrl}}/stockIssues/receiver/{{receiverId}}?page=1&limit=10
 
-### Get Gifts by Stock Item ID
-GET {{baseUrl}}/gifts/stockItem/{{stockItemId}}
+### Get Stock Issues by Stock Item ID
+GET {{baseUrl}}/stockIssues/stockItem/{{stockItemId}}
 
-### Get Gifts by Stock Item ID with Pagination
-GET {{baseUrl}}/gifts/stockItem/{{stockItemId}}?page=1&limit=10
+### Get Stock Issues by Stock Item ID with Pagination
+GET {{baseUrl}}/stockIssues/stockItem/{{stockItemId}}?page=1&limit=10
 
-### Create Gift
-# @name createGift
-POST {{baseUrl}}/gifts
+### Create Stock Issue
+# @name createStockIssue
+POST {{baseUrl}}/stockIssues
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -288,11 +288,11 @@ Content-Type: application/json
     "date": "2023-06-20"
 }
 
-### Store Gift ID
-@giftId = {{createGift.response.body.data.gift._id}}
+### Store Stock Issue ID
+@stockIssueId = {{createStockIssue.response.body.data.stockIssue._id}}
 
-### Update Gift
-PATCH {{baseUrl}}/gifts/{{giftId}}
+### Update Stock Issue
+PATCH {{baseUrl}}/stockIssues/{{stockIssueId}}
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -301,8 +301,8 @@ Content-Type: application/json
     "date": "2023-06-21"
 }
 
-### Delete Gift
-DELETE {{baseUrl}}/gifts/{{giftId}}
+### Delete Stock Issue
+DELETE {{baseUrl}}/stockIssues/{{stockIssueId}}
 Authorization: Bearer {{authToken}}
 
 ### ---------------------- VENDORS ---------------------- ###
