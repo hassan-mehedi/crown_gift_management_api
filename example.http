@@ -77,9 +77,12 @@ Content-Type: application/json
     "name": "Laptop",
     "quantity": 10,
     "storage": "Warehouse A",
-    "totalCost": 12000,
+    "unitCost": 1200,
     "picture": "laptop.jpg",
-    "date": "2023-06-15"
+    "vendorId": "60f1b2b3c4d5e6f7a8b9c0d1",
+    "workOrderNumber": "WO-2023-001",
+    "date": "2023-06-15",
+    "description": "High-performance laptop for development work"
 }
 
 ### Store Stock Item ID
@@ -95,15 +98,21 @@ Content-Type: application/json
         "name": "Mouse",
         "quantity": 20,
         "storage": "Warehouse B",
-        "totalCost": 1000,
-        "date": "2023-06-15"
+        "unitCost": 50,
+        "vendorId": "60f1b2b3c4d5e6f7a8b9c0d2",
+        "workOrderNumber": "WO-2023-002",
+        "date": "2023-06-15",
+        "description": "Wireless optical mouse"
     },
     {
         "name": "Keyboard",
         "quantity": 15,
         "storage": "Warehouse B",
-        "totalCost": 1500,
-        "date": "2023-06-15"
+        "unitCost": 100,
+        "vendorId": "60f1b2b3c4d5e6f7a8b9c0d2",
+        "workOrderNumber": "WO-2023-003",
+        "date": "2023-06-15",
+        "description": "Mechanical keyboard with RGB lighting"
     }
 ]
 
@@ -114,7 +123,8 @@ Content-Type: application/json
 
 {
     "quantity": 15,
-    "totalCost": 15000
+    "unitCost": 1500,
+    "description": "Updated laptop specifications"
 }
 
 ### Delete Stock Item
@@ -141,7 +151,8 @@ Content-Type: application/json
 {
     "stockItemId": "{{stockItemId}}",
     "quantity": 50,
-    "date": "2023-06-20T10:30:00.000Z"
+    "date": "2023-06-20T10:30:00.000Z",
+    "description": "Stock replenishment from vendor"
 }
 
 ### Store Stock Modification ID
@@ -156,12 +167,14 @@ Content-Type: application/json
     {
         "stockItemId": "{{stockItemId}}",
         "quantity": 25,
-        "date": "2023-06-20T10:30:00.000Z"
+        "date": "2023-06-20T10:30:00.000Z",
+        "description": "Initial stock addition"
     },
     {
         "stockItemId": "{{stockItemId}}",
         "quantity": 30,
-        "date": "2023-06-21T11:30:00.000Z"
+        "date": "2023-06-21T11:30:00.000Z",
+        "description": "Additional stock from second vendor"
     }
 ]
 
@@ -172,7 +185,8 @@ Content-Type: application/json
 
 {
     "quantity": 75,
-    "date": "2023-06-22T12:00:00.000Z"
+    "date": "2023-06-22T12:00:00.000Z",
+    "description": "Updated stock modification with correct quantity"
 }
 
 ### Delete Stock Modification
@@ -212,7 +226,8 @@ Content-Type: application/json
     "name": "John Doe",
     "phone": "9876543210",
     "email": "john@example.com",
-    "department": "Marketing"
+    "department": "Marketing",
+    "description": "Marketing team lead responsible for campaigns"
 }
 
 ### Store Receiver ID
@@ -228,13 +243,15 @@ Content-Type: application/json
         "name": "Jane Doe",
         "phone": "9876543211",
         "email": "jane@example.com",
-        "department": "HR"
+        "department": "HR",
+        "description": "HR manager handling employee relations"
     },
     {
         "name": "Bob Smith",
         "phone": "9876543212",
         "email": "bob@example.com",
-        "department": "Finance"
+        "department": "Finance",
+        "description": "Finance analyst responsible for budget tracking"
     }
 ]
 
@@ -245,7 +262,8 @@ Content-Type: application/json
 
 {
     "name": "John Smith",
-    "department": "Sales"
+    "department": "Sales",
+    "description": "Senior sales representative"
 }
 
 ### Delete Receiver
@@ -285,6 +303,9 @@ Content-Type: application/json
     "stockItemId": "{{stockItemId}}",
     "quantity": 2,
     "receiverId": "{{receiverId}}",
+    "status": "pending",
+    "comment": "Laptop allocation for new employee",
+    "approvalStatus": "pending",
     "date": "2023-06-20"
 }
 
@@ -298,6 +319,9 @@ Content-Type: application/json
 
 {
     "quantity": 3,
+    "status": "approved",
+    "comment": "Updated quantity after approval",
+    "approvalStatus": "approved",
     "date": "2023-06-21"
 }
 
@@ -328,9 +352,7 @@ Content-Type: application/json
 {
     "name": "ABC Suppliers",
     "phone": "1234567890",
-    "email": "contact@abcsuppliers.com",
-    "address": "123 Business Street, City",
-    "contactPerson": "John Manager"
+    "email": "contact@abcsuppliers.com"
 }
 
 ### Store Vendor ID
@@ -343,8 +365,7 @@ Content-Type: application/json
 
 {
     "name": "ABC Premium Suppliers",
-    "contactPerson": "Jane Manager",
-    "address": "456 Business Avenue, City"
+    "email": "premium@abcsuppliers.com"
 }
 
 ### Update Vendor by ID
@@ -353,6 +374,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
+    "name": "ABC Updated Suppliers",
     "email": "info@abcsuppliers.com",
     "phone": "1234567891"
 }
