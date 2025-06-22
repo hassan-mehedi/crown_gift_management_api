@@ -25,7 +25,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/stock-items", stockItemRoutes);
 app.use("/api/stock-modifications", stockModificationRoutes);
 app.use("/api/receivers", receiverRoutes);
-app.use("/api/stockIssues", stockIssueRoutes);
+app.use("/api/stock-issues", stockIssueRoutes);
 app.use("/api/vendors", vendorRoutes);
 
 // Default route

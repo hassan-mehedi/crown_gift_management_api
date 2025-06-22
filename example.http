@@ -273,29 +273,29 @@ Authorization: Bearer {{authToken}}
 ### ---------------------- STOCK ISSUES ---------------------- ###
 
 ### Get All Stock Issues
-GET {{baseUrl}}/stockIssues
+GET {{baseUrl}}/stock-issues
 
 ### Get All Stock Issues with Pagination
-GET {{baseUrl}}/stockIssues?page=1&limit=10
+GET {{baseUrl}}/stock-issues?page=1&limit=10
 
 ### Get Stock Issue by ID
-GET {{baseUrl}}/stockIssues/{{stockIssueId}}
+GET {{baseUrl}}/stock-issues/{{stockIssueId}}
 
 ### Get Stock Issues by Receiver ID
-GET {{baseUrl}}/stockIssues/receiver/{{receiverId}}
+GET {{baseUrl}}/stock-issues/receiver/{{receiverId}}
 
 ### Get Stock Issues by Receiver ID with Pagination
-GET {{baseUrl}}/stockIssues/receiver/{{receiverId}}?page=1&limit=10
+GET {{baseUrl}}/stock-issues/receiver/{{receiverId}}?page=1&limit=10
 
 ### Get Stock Issues by Stock Item ID
-GET {{baseUrl}}/stockIssues/stockItem/{{stockItemId}}
+GET {{baseUrl}}/stock-issues/stockItem/{{stockItemId}}
 
 ### Get Stock Issues by Stock Item ID with Pagination
-GET {{baseUrl}}/stockIssues/stockItem/{{stockItemId}}?page=1&limit=10
+GET {{baseUrl}}/stock-issues/stockItem/{{stockItemId}}?page=1&limit=10
 
 ### Create Stock Issue
 # @name createStockIssue
-POST {{baseUrl}}/stockIssues
+POST {{baseUrl}}/stock-issues
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -313,7 +313,7 @@ Content-Type: application/json
 @stockIssueId = {{createStockIssue.response.body.data.stockIssue._id}}
 
 ### Update Stock Issue
-PATCH {{baseUrl}}/stockIssues/{{stockIssueId}}
+PATCH {{baseUrl}}/stock-issues/{{stockIssueId}}
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -326,7 +326,7 @@ Content-Type: application/json
 }
 
 ### Delete Stock Issue
-DELETE {{baseUrl}}/stockIssues/{{stockIssueId}}
+DELETE {{baseUrl}}/stock-issues/{{stockIssueId}}
 Authorization: Bearer {{authToken}}
 
 ### ---------------------- VENDORS ---------------------- ###

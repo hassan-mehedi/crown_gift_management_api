@@ -12,7 +12,16 @@ export const getAllStockIssues = async (req: Request, res: Response, next: NextF
         const limit = parseInt(req.query.limit as string) || 100;
         const skip = (page - 1) * limit;
 
-        const stockIssues = await StockIssueModel.find().populate("stockItemId").populate("receiverId").skip(skip).limit(limit);
+        const stockIssues = await StockIssueModel.find()
+            .populate({
+                path: "stockItemId",
+                populate: {
+                    path: "vendorId",
+                },
+            })
+            .populate("receiverId")
+            .skip(skip)
+            .limit(limit);
 
         const totalStockIssues = await StockIssueModel.countDocuments();
         const totalPages = Math.ceil(totalStockIssues / limit);
@@ -43,7 +52,14 @@ export const getStockIssueById = async (req: Request, res: Response, next: NextF
             throw new AppError("Invalid stock issue ID", 400);
         }
 
-        const stockIssue = await StockIssueModel.findById(id).populate("stockItemId").populate("receiverId");
+        const stockIssue = await StockIssueModel.findById(id)
+            .populate({
+                path: "stockItemId",
+                populate: {
+                    path: "vendorId",
+                },
+            })
+            .populate("receiverId");
 
         if (!stockIssue) {
             throw new AppError(`Stock issue with ID ${id} not found`, 404);
@@ -76,7 +92,15 @@ export const getStockIssuesByReceiverId = async (req: Request, res: Response, ne
             throw new AppError(`Receiver with ID ${receiverId} not found`, 404);
         }
 
-        const stockIssues = await StockIssueModel.find({ receiverId }).populate("stockItemId").skip(skip).limit(limit);
+        const stockIssues = await StockIssueModel.find({ receiverId })
+            .populate({
+                path: "stockItemId",
+                populate: {
+                    path: "vendorId",
+                },
+            })
+            .skip(skip)
+            .limit(limit);
         const totalStockIssues = await StockIssueModel.countDocuments({ receiverId });
         const totalPages = Math.ceil(totalStockIssues / limit);
 
@@ -115,7 +139,15 @@ export const getStockIssuesByStockItemId = async (req: Request, res: Response, n
             throw new AppError(`Stock item with ID ${stockItemId} not found`, 404);
         }
 
-        const stockIssues = await StockIssueModel.find({ stockItemId }).populate("stockItemId").skip(skip).limit(limit);
+        const stockIssues = await StockIssueModel.find({ stockItemId })
+            .populate({
+                path: "stockItemId",
+                populate: {
+                    path: "vendorId",
+                },
+            })
+            .skip(skip)
+            .limit(limit);
         const totalStockIssues = await StockIssueModel.countDocuments({ stockItemId });
         const totalPages = Math.ceil(totalStockIssues / limit);
 
