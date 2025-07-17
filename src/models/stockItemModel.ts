@@ -31,6 +31,10 @@ const stockItemSchema = new Schema<StockItemDocument>(
         workOrderNumber: {
             type: String,
         },
+        images: {
+            type: [String],
+            default: [],
+        },
         date: {
             type: Date,
             required: true,

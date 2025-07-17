@@ -19,6 +19,7 @@ export interface StockItem {
     picture: string;
     vendorId: string;
     workOrderNumber: string;
+    images: string[];
     date: Date;
 }
 
@@ -51,6 +52,8 @@ export interface Vendor {
     name: string;
     email: string;
     phone: string;
+    contactPersonName: string;
+    address: string;
 }
 
 export interface ExtendedRequest extends Request {

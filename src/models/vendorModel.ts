@@ -12,11 +12,18 @@ const vendorSchema = new Schema<VendorDocument>(
         email: {
             type: String,
         },
-
         phone: {
             type: String,
             required: true,
             unique: true,
+        },
+        contactPersonName: {
+            type: String,
+            default: "",
+        },
+        address: {
+            type: String,
+            default: "",
         },
     },
     {
