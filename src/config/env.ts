@@ -14,6 +14,11 @@ const env = cleanEnv(process.env, {
 
     // JWT Secret for authentication
     JWT_SECRET: str({ desc: "JWT secret key", default: "your_jwt_secret_key_here" }),
+
+    // Supabase configuration
+    SUPABASE_URL: str({ desc: "Supabase project URL" }),
+    SUPABASE_ANON_KEY: str({ desc: "Supabase anonymous key", default: "" }),
+    SUPABASE_SERVICE_ROLE_KEY: str({ desc: "Supabase service role key" }),
 });
 
 export default env;

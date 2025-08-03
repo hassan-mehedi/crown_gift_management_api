@@ -60,3 +60,22 @@ export interface ExtendedRequest extends Request {
     isAuthenticated?: boolean;
     user?: JwtPayload | { id: string; phone: string };
 }
+
+export interface UploadResponse {
+    success: boolean;
+    message: string;
+    data?: {
+        urls: string[];
+        paths: string[];
+    };
+    error?: string;
+}
+
+export interface UploadedFile {
+    originalName: string;
+    fileName: string;
+    path: string;
+    url: string;
+    size: number;
+    mimetype: string;
+}

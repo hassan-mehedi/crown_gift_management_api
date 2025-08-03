@@ -1,13 +1,15 @@
-import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import userRoutes from "./routes/userRoutes";
-import stockItemRoutes from "./routes/stockItemRoutes";
-import stockModificationRoutes from "./routes/stockModificationRoutes";
+import express from "express";
+
+import errorHandler from "./middleware/errorHandler";
+import imageUploadRoutes from "./routes/imageUploadRoutes";
 import receiverRoutes from "./routes/receiverRoutes";
 import stockIssueRoutes from "./routes/stockIssueRoutes";
+import stockItemRoutes from "./routes/stockItemRoutes";
+import stockModificationRoutes from "./routes/stockModificationRoutes";
+import userRoutes from "./routes/userRoutes";
 import vendorRoutes from "./routes/vendorRoutes";
-import errorHandler from "./middleware/errorHandler";
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +29,7 @@ app.use("/api/stock-modifications", stockModificationRoutes);
 app.use("/api/receivers", receiverRoutes);
 app.use("/api/stock-issues", stockIssueRoutes);
 app.use("/api/vendors", vendorRoutes);
+app.use("/api/image-upload", imageUploadRoutes);
 
 // Default route
 app.get("/", (req, res) => {

@@ -1,4 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
+import multer from "multer";
+
 import AppError from "../utils/appError";
 
 const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -12,6 +14,21 @@ const errorHandler = (err: Error, req: Request, res: Response, next: NextFunctio
         statusCode = err.statusCode;
         status = err.status;
         isOperational = err.isOperational;
+    }
+
+    if (err instanceof multer.MulterError) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).json({
+                status: "error",
+                message: "File too large. Maximum size is 5MB per file.",
+            });
+        }
+        if (err.code === "LIMIT_FILE_COUNT") {
+            return res.status(400).json({
+                status: "error",
+                message: "Too many files. Maximum is 10 files per upload.",
+            });
+        }
     }
 
     // Different response for development and production environment
