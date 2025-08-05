@@ -7,11 +7,12 @@ export const stockIssueSchema = z.object({
     receiverId: z.string().min(1, "Receiver ID is required"),
     status: z.string().optional(),
     comment: z.string().optional(),
-    approvalStatus: z.string().optional(),
     date: z
         .string()
         .or(z.date())
         .transform(val => new Date(val)),
+    createdBy: z.string().min(1, "Creator ID is required"),
+    isApproved: z.boolean().default(false),
 });
 
 // Schema for creating a single stock issue

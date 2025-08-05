@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
+
 import { StockIssue } from "../types";
 
 export interface StockIssueDocument extends StockIssue, Document {}
@@ -25,12 +26,18 @@ const stockIssueSchema = new Schema<StockIssueDocument>(
         comment: {
             type: String,
         },
-        approvalStatus: {
-            type: String,
-        },
         date: {
             type: Date,
             required: true,
+        },
+        createdBy: {
+            type: String,
+            required: true,
+            ref: "User",
+        },
+        isApproved: {
+            type: Boolean,
+            default: false,
         },
     },
     {

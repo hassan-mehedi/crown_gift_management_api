@@ -1,17 +1,20 @@
-import { Request, Response, NextFunction } from "express";
-import StockModificationModel from "../models/stockModificationModel";
-import StockItemModel from "../models/stockItemModel";
-import AppError from "../utils/appError";
+import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
+
+import RequestModel from "../models/requestModel";
+import StockItemModel from "../models/stockItemModel";
+import StockModificationModel from "../models/stockModificationModel";
 import {
     createStockModificationSchema,
     createStockModificationsSchema,
-    updateStockModificationSchema,
-    getStockModificationSchema,
-    getStockModificationsByStockItemSchema,
     getStockModificationCountSchema,
+    getStockModificationsByStockItemSchema,
+    getStockModificationSchema,
     paginationSchema,
+    updateStockModificationSchema,
 } from "../schemas/stockModificationSchema";
+import { ExtendedRequest } from "../types";
+import AppError from "../utils/appError";
 
 // Get all stock modifications with pagination
 export const getAllStockModifications = async (req: Request, res: Response, next: NextFunction) => {
@@ -21,9 +24,9 @@ export const getAllStockModifications = async (req: Request, res: Response, next
         const { page, limit } = query;
         const skip = (page - 1) * limit;
 
-        const stockModifications = await StockModificationModel.find().skip(skip).limit(limit).populate("stockItemId");
+        const stockModifications = await StockModificationModel.find({ isApproved: true }).skip(skip).limit(limit).populate("stockItemId");
 
-        const totalStockModifications = await StockModificationModel.countDocuments();
+        const totalStockModifications = await StockModificationModel.countDocuments({ isApproved: true });
         const totalPages = Math.ceil(totalStockModifications / limit);
 
         return res.status(200).json({
@@ -54,7 +57,7 @@ export const getStockModificationById = async (req: Request, res: Response, next
             throw new AppError("Invalid stock modification ID", 400);
         }
 
-        const stockModification = await StockModificationModel.findById(id).populate("stockItemId");
+        const stockModification = await StockModificationModel.findOne({ _id: id, isApproved: true }).populate("stockItemId");
 
         if (!stockModification) {
             throw new AppError(`Stock modification with ID ${id} not found`, 404);
@@ -70,7 +73,7 @@ export const getStockModificationById = async (req: Request, res: Response, next
 };
 
 // Create a new stock modification
-export const createStockModification = async (req: Request, res: Response, next: NextFunction) => {
+export const createStockModification = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
     try {
         // Validate request body
         const { body: stockModificationData } = createStockModificationSchema.parse({ body: req.body });
@@ -86,8 +89,17 @@ export const createStockModification = async (req: Request, res: Response, next:
             throw new AppError(`Stock item with ID ${stockModificationData.stockItemId} not found`, 404);
         }
 
+        stockModificationData.createdBy = req.user?.id;
+
         // Create the stock modification
         const stockModification = await StockModificationModel.create(stockModificationData);
+
+        // Create a request for the stock modification
+        const requestData = {
+            stockModificationId: stockModification._id,
+            createdBy: req.user?.id,
+        };
+        await RequestModel.create(requestData);
 
         // Increase stock item quantity
         await StockItemModel.findByIdAndUpdate(stockModificationData.stockItemId, {
@@ -106,7 +118,7 @@ export const createStockModification = async (req: Request, res: Response, next:
 };
 
 // Create multiple stock modifications
-export const createStockModifications = async (req: Request, res: Response, next: NextFunction) => {
+export const createStockModifications = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
     try {
         // Validate request body
         const { body: stockModificationsData } = createStockModificationsSchema.parse({ body: req.body });
@@ -123,8 +135,21 @@ export const createStockModifications = async (req: Request, res: Response, next
             }
         }
 
+        // Set createdBy for each stock modification
+        const userId = req.user?.id;
+        stockModificationsData.forEach(modification => {
+            modification.createdBy = userId;
+        });
+
         // Create all stock modifications
         const stockModifications = await StockModificationModel.insertMany(stockModificationsData);
+
+        // Create requests for each stock modification
+        const requestsData = stockModifications.map(modification => ({
+            stockModificationId: modification._id,
+            createdBy: req.user?.id,
+        }));
+        await RequestModel.insertMany(requestsData);
 
         // Update stock quantities for each stock item
         const stockUpdates = new Map();
@@ -280,13 +305,13 @@ export const getStockModificationsByStockItemId = async (req: Request, res: Resp
             throw new AppError("Invalid stock item ID", 400);
         }
 
-        const stockModifications = await StockModificationModel.find({ stockItemId })
+        const stockModifications = await StockModificationModel.find({ stockItemId, isApproved: true })
             .skip(skip)
             .limit(limit)
             .populate("stockItemId")
             .sort({ date: -1 });
 
-        const totalStockModifications = await StockModificationModel.countDocuments({ stockItemId });
+        const totalStockModifications = await StockModificationModel.countDocuments({ stockItemId, isApproved: true });
         const totalPages = Math.ceil(totalStockModifications / limit);
 
         return res.status(200).json({
@@ -317,9 +342,9 @@ export const getStockModificationCountByStockItemId = async (req: Request, res: 
             throw new AppError("Invalid stock item ID", 400);
         }
 
-        const count = await StockModificationModel.countDocuments({ stockItemId });
+        const count = await StockModificationModel.countDocuments({ stockItemId, isApproved: true });
         const totalQuantity = await StockModificationModel.aggregate([
-            { $match: { stockItemId: new mongoose.Types.ObjectId(stockItemId) } },
+            { $match: { stockItemId: new mongoose.Types.ObjectId(stockItemId), isApproved: true } },
             { $group: { _id: null, totalQuantity: { $sum: "$quantity" } } },
         ]);
 

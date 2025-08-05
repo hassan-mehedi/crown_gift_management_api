@@ -25,7 +25,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
         const user = await UserModel.create(userData);
 
         // Generate JWT token
-        const token = jwt.sign({ id: user._id, phone: user.phone }, env.JWT_SECRET, { expiresIn: "7d" });
+        const token = jwt.sign({ id: user._id, phone: user.phone, role: user.role }, env.JWT_SECRET, { expiresIn: "1y" });
 
         // Remove password from response using utility function
         const userResponse = removeSensitiveInfo(user.toObject());
@@ -60,7 +60,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         }
 
         // Generate JWT token
-        const token = jwt.sign({ id: user._id, phone: user.phone }, env.JWT_SECRET, { expiresIn: "7d" });
+        const token = jwt.sign({ id: user._id, phone: user.phone, role: user.role }, env.JWT_SECRET, { expiresIn: "7d" });
 
         // Remove password from response using utility function
         const userResponse = removeSensitiveInfo(user.toObject());

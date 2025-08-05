@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
+
 import { StockItem } from "../types";
 
 export interface StockItemDocument extends StockItem, Document {}
@@ -38,6 +39,15 @@ const stockItemSchema = new Schema<StockItemDocument>(
         date: {
             type: Date,
             required: true,
+        },
+        createdBy: {
+            type: String,
+            required: true,
+            ref: "User",
+        },
+        isApproved: {
+            type: Boolean,
+            default: false,
         },
     },
     {

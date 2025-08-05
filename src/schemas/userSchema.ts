@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UserRole } from "../enums";
 
 // Schema for validating a single user
 export const userSchema = z.object({
@@ -8,6 +9,7 @@ export const userSchema = z.object({
     phone: z.string().min(10, "Phone is required and should be at least 10 digits"),
     password: z.string().min(8, "Password is required and should be at least 8 characters"),
     designation: z.string().optional(),
+    role: z.enum([UserRole.ADMIN, UserRole.RECEIVER, UserRole.USER]).default(UserRole.USER),
 });
 
 // Schema for login

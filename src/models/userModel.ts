@@ -1,4 +1,6 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
+
+import { UserRole } from "../enums";
 import { User } from "../types";
 
 export interface UserDocument extends User, Document {}
@@ -26,6 +28,11 @@ const userSchema = new Schema<UserDocument>(
         },
         designation: {
             type: String,
+        },
+        role: {
+            type: String,
+            enum: [UserRole.ADMIN, UserRole.USER, UserRole.RECEIVER],
+            default: UserRole.USER,
         },
     },
     {

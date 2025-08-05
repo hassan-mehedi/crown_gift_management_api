@@ -1,9 +1,12 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
+
+import ReceiverModel from "../models/receiverModel";
+import RequestModel from "../models/requestModel";
 import StockIssueModel from "../models/stockIssueModel";
 import StockItemModel from "../models/stockItemModel";
-import ReceiverModel from "../models/receiverModel";
+import { ExtendedRequest } from "../types";
 import AppError from "../utils/appError";
-import mongoose from "mongoose";
 
 // Get all stock issues with pagination
 export const getAllStockIssues = async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +15,7 @@ export const getAllStockIssues = async (req: Request, res: Response, next: NextF
         const limit = parseInt(req.query.limit as string) || 100;
         const skip = (page - 1) * limit;
 
-        const stockIssues = await StockIssueModel.find()
+        const stockIssues = await StockIssueModel.find({ isApproved: true })
             .populate({
                 path: "stockItemId",
                 populate: {
@@ -23,7 +26,7 @@ export const getAllStockIssues = async (req: Request, res: Response, next: NextF
             .skip(skip)
             .limit(limit);
 
-        const totalStockIssues = await StockIssueModel.countDocuments();
+        const totalStockIssues = await StockIssueModel.countDocuments({ isApproved: true });
         const totalPages = Math.ceil(totalStockIssues / limit);
 
         return res.status(200).json({
@@ -52,7 +55,7 @@ export const getStockIssueById = async (req: Request, res: Response, next: NextF
             throw new AppError("Invalid stock issue ID", 400);
         }
 
-        const stockIssue = await StockIssueModel.findById(id)
+        const stockIssue = await StockIssueModel.findOne({ _id: id, isApproved: true })
             .populate({
                 path: "stockItemId",
                 populate: {
@@ -92,7 +95,7 @@ export const getStockIssuesByReceiverId = async (req: Request, res: Response, ne
             throw new AppError(`Receiver with ID ${receiverId} not found`, 404);
         }
 
-        const stockIssues = await StockIssueModel.find({ receiverId })
+        const stockIssues = await StockIssueModel.find({ receiverId, isApproved: true })
             .populate({
                 path: "stockItemId",
                 populate: {
@@ -101,7 +104,7 @@ export const getStockIssuesByReceiverId = async (req: Request, res: Response, ne
             })
             .skip(skip)
             .limit(limit);
-        const totalStockIssues = await StockIssueModel.countDocuments({ receiverId });
+        const totalStockIssues = await StockIssueModel.countDocuments({ receiverId, isApproved: true });
         const totalPages = Math.ceil(totalStockIssues / limit);
 
         return res.status(200).json({
@@ -139,7 +142,7 @@ export const getStockIssuesByStockItemId = async (req: Request, res: Response, n
             throw new AppError(`Stock item with ID ${stockItemId} not found`, 404);
         }
 
-        const stockIssues = await StockIssueModel.find({ stockItemId })
+        const stockIssues = await StockIssueModel.find({ stockItemId, isApproved: true })
             .populate({
                 path: "stockItemId",
                 populate: {
@@ -148,7 +151,7 @@ export const getStockIssuesByStockItemId = async (req: Request, res: Response, n
             })
             .skip(skip)
             .limit(limit);
-        const totalStockIssues = await StockIssueModel.countDocuments({ stockItemId });
+        const totalStockIssues = await StockIssueModel.countDocuments({ stockItemId, isApproved: true });
         const totalPages = Math.ceil(totalStockIssues / limit);
 
         return res.status(200).json({
@@ -169,9 +172,10 @@ export const getStockIssuesByStockItemId = async (req: Request, res: Response, n
 };
 
 // Create a new stock issue
-export const createStockIssue = async (req: Request, res: Response, next: NextFunction) => {
+export const createStockIssue = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
     try {
         const stockIssueData = req.body;
+        stockIssueData.createdBy = req.user?.id;
 
         // Check if stock item exists
         if (!mongoose.Types.ObjectId.isValid(stockIssueData.stockItemId)) {
@@ -198,6 +202,13 @@ export const createStockIssue = async (req: Request, res: Response, next: NextFu
 
         // Create stock issue without using transaction
         const stockIssue = await StockIssueModel.create(stockIssueData);
+
+        // Create a request for the stock issue
+        const requestData = {
+            stockIssueId: stockIssue._id,
+            createdBy: req.user?.id,
+        };
+        await RequestModel.create(requestData);
 
         // Update stock quantity
         await StockItemModel.findByIdAndUpdate(stockIssueData.stockItemId, { $inc: { quantity: -stockIssueData.quantity } });
@@ -268,7 +279,7 @@ const checkStockAvailability = async (stockItemId: string, requestedQuantity: nu
 };
 
 // Update a stock issue
-export const updateStockIssue = async (req: Request, res: Response, next: NextFunction) => {
+export const updateStockIssue = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const updateData = req.body;

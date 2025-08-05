@@ -386,3 +386,54 @@ Authorization: Bearer {{authToken}}
 ### Delete Vendor by ID
 DELETE {{baseUrl}}/vendors/id/{{vendorId}}
 Authorization: Bearer {{authToken}}
+
+### ---------------------- REQUESTS ---------------------- ###
+
+### Get All Requests
+GET {{baseUrl}}/requests
+Authorization: Bearer {{authToken}}
+
+### Get All Requests with Status Filter
+GET {{baseUrl}}/requests?status=pending
+Authorization: Bearer {{authToken}}
+
+### Get All Requests with Pagination
+GET {{baseUrl}}/requests?page=1&limit=10
+Authorization: Bearer {{authToken}}
+
+### Get All Requests with Status Filter and Pagination
+GET {{baseUrl}}/requests?status=approved&page=1&limit=5
+Authorization: Bearer {{authToken}}
+
+### Get Request by ID
+GET {{baseUrl}}/requests/{{requestId}}
+Authorization: Bearer {{authToken}}
+
+### Update Request Status (Admin Only) - Approve
+PUT {{baseUrl}}/requests/{{requestId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "status": "approved",
+    "comment": "Request approved after review"
+}
+
+### Update Request Status (Admin Only) - Reject
+PUT {{baseUrl}}/requests/{{requestId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "status": "rejected",
+    "comment": "Request rejected due to insufficient documentation"
+}
+
+### Update Request Comment Only (Admin Only)
+PUT {{baseUrl}}/requests/{{requestId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "comment": "Additional comments added by admin"
+}

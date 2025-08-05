@@ -14,6 +14,8 @@ export const stockItemSchema = z.object({
         .or(z.date())
         .transform(val => new Date(val)),
     description: z.string().optional(),
+    createdBy: z.string().min(1, "Creator ID is required"),
+    isApproved: z.boolean().default(false),
 });
 
 // Schema for creating a single stock item

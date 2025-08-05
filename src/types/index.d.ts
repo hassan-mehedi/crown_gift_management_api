@@ -2,6 +2,8 @@ import { Request } from "express";
 import { JwtPayload } from "jsonwebtoken";
 import { Types } from "mongoose";
 
+import { ApprovalStatus, UserRole } from "../enums";
+
 export interface User {
     name: string;
     email: string;
@@ -9,6 +11,7 @@ export interface User {
     phone: string;
     password: string;
     designation: string;
+    role: UserRole;
 }
 
 export interface StockItem {
@@ -21,6 +24,8 @@ export interface StockItem {
     workOrderNumber: string;
     images: string[];
     date: Date;
+    isApproved: boolean;
+    createdBy: string;
 }
 
 export interface Receiver {
@@ -37,8 +42,9 @@ export interface StockIssue {
     receiverId: string;
     status: string;
     comment: string;
-    approvalStatus: string;
     date: Date;
+    isApproved: boolean;
+    createdBy: string;
 }
 
 export interface StockModification {
@@ -46,6 +52,8 @@ export interface StockModification {
     quantity: number;
     description?: string;
     date: Date;
+    isApproved: boolean;
+    createdBy: string;
 }
 
 export interface Vendor {
@@ -56,9 +64,20 @@ export interface Vendor {
     address: string;
 }
 
+export interface requestModel {
+    stockItemId?: string;
+    stockIssueId?: string;
+    stockModificationId?: string;
+    status: ApprovalStatus;
+    comment?: string;
+    createdBy: string;
+    approvedBy?: string;
+    rejectedBy?: string;
+}
+
 export interface ExtendedRequest extends Request {
     isAuthenticated?: boolean;
-    user?: JwtPayload | { id: string; phone: string };
+    user?: JwtPayload | { id: string; phone: string; role: UserRole };
 }
 
 export interface UploadResponse {

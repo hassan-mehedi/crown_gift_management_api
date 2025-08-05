@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
+
 import { StockModification } from "../types";
 
 export interface StockModificationDocument extends StockModification, Document {}
@@ -20,6 +21,15 @@ const stockModificationSchema = new Schema<StockModificationDocument>(
         date: {
             type: Date,
             required: true,
+        },
+        createdBy: {
+            type: String,
+            required: true,
+            ref: "User",
+        },
+        isApproved: {
+            type: Boolean,
+            default: false,
         },
     },
     {
