@@ -11,7 +11,7 @@ export const stockIssueSchema = z.object({
         .string()
         .or(z.date())
         .transform(val => new Date(val)),
-    createdBy: z.string().min(1, "Creator ID is required"),
+    createdBy: z.string().optional(),
     isApproved: z.boolean().default(false),
 });
 
