@@ -6,7 +6,6 @@ export const receiverSchema = z.object({
     phone: z.string().min(10, "Phone is required and should be at least 10 digits"),
     email: z.string().email("Valid email is required").optional(),
     department: z.string().optional(),
-    description: z.string().optional(),
 });
 
 // Schema for creating a single receiver

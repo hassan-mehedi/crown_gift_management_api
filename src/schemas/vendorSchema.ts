@@ -5,6 +5,8 @@ export const vendorSchema = z.object({
     name: z.string().min(3, "Name is required and should be at least 3 characters"),
     email: z.string().email("Please provide a valid email").optional(),
     phone: z.string().min(10, "Phone is required and should be at least 10 digits"),
+    contactPersonName: z.string().optional(),
+    address: z.string().optional(),
 });
 
 // Schema for creating a single vendor
