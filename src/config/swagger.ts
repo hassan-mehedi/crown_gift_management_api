@@ -15,7 +15,7 @@ const options = {
         },
         servers: [
             {
-                url: process.env.NODE_ENV === "production" ? "https://your-production-url.com" : "http://localhost:3000",
+                url: process.env.NODE_ENV === "production" ? "https://crown-gift-management-api.denom.cc" : "http://localhost:5000",
                 description: process.env.NODE_ENV === "production" ? "Production server" : "Development server",
             },
         ],
