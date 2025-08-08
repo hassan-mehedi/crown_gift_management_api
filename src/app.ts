@@ -1,7 +1,9 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import swaggerUi from "swagger-ui-express";
 
+import swaggerSpecs from "./config/swagger";
 import errorHandler from "./middleware/errorHandler";
 import imageUploadRoutes from "./routes/imageUploadRoutes";
 import requestRoutes from "./routes/requestRoutes";
@@ -22,6 +24,23 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Swagger documentation
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpecs, {
+        explorer: true,
+        customCss: ".swagger-ui .topbar { display: none }",
+        customSiteTitle: "Crown Gift Management API Documentation",
+    })
+);
+
+// Serve raw swagger JSON
+app.get("/swagger.json", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(swaggerSpecs);
+});
+
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/stock-items", stockItemRoutes);
@@ -36,6 +55,11 @@ app.get("/", (req, res) => {
     res.json({
         status: "success",
         message: "Crown Stock Issue Management API - Welcome!",
+        documentation: {
+            swagger_ui: "/api-docs",
+            swagger_json: "/swagger.json",
+        },
+        version: "1.0.0",
     });
 });
 
