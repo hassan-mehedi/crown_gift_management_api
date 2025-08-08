@@ -20,6 +20,12 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
             throw new AppError(`User with phone ${userData.phone} already exists`, 400);
         }
 
+        // Check if the role is Admin
+        // Only Admin can update existing user role to Admin
+        if (userData.role === UserRole.ADMIN) {
+            throw new AppError("Only Admin can update existing user role to Admin", 403);
+        }
+
         // Hash the password
         const salt = await bcrypt.genSalt(10);
         userData.password = await bcrypt.hash(userData.password, salt);
