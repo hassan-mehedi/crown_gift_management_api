@@ -1,25 +1,28 @@
 import express from "express";
+
 import {
-    getAllStockModifications,
-    getStockModificationById,
     createStockModification,
     createStockModifications,
-    updateStockModification,
     deleteStockModification,
-    getStockModificationsByStockItemId,
+    getAllStockModifications,
+    getStockModificationById,
     getStockModificationCountByStockItemId,
+    getStockModificationsByStockItemId,
+    updateStockModification,
 } from "../controllers/stockModificationController";
-import validateRequest from "../middleware/validateRequest";
 import authenticateJWT from "../middleware/authMiddleware";
+import validateRequest from "../middleware/validateRequest";
+import validateRole from "../middleware/validateRole";
 import {
-    getStockModificationSchema,
     createStockModificationSchema,
     createStockModificationsSchema,
-    updateStockModificationSchema,
-    paginationSchema,
-    getStockModificationsByStockItemSchema,
     getStockModificationCountSchema,
+    getStockModificationsByStockItemSchema,
+    getStockModificationSchema,
+    paginationSchema,
+    updateStockModificationSchema,
 } from "../schemas/stockModificationSchema";
+import { UserRole } from "../enums";
 
 const router = express.Router();
 
@@ -37,6 +40,7 @@ router.get("/stock-item/:stockItemId/count", validateRequest(getStockModificatio
 router.post(
     "/",
     authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
     (req, res, next) => {
         // Determine if it's a single or multiple stock modifications based on the request body
         const validationSchema = Array.isArray(req.body) ? createStockModificationsSchema : createStockModificationSchema;
@@ -52,8 +56,20 @@ router.post(
     }
 );
 
-router.patch("/:id", authenticateJWT, validateRequest(updateStockModificationSchema), updateStockModification);
+router.patch(
+    "/:id",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(updateStockModificationSchema),
+    updateStockModification
+);
 
-router.delete("/:id", authenticateJWT, validateRequest(getStockModificationSchema), deleteStockModification);
+router.delete(
+    "/:id",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(getStockModificationSchema),
+    deleteStockModification
+);
 
 export default router;

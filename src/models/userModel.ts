@@ -31,8 +31,8 @@ const userSchema = new Schema<UserDocument>(
         },
         role: {
             type: String,
-            enum: [UserRole.ADMIN, UserRole.USER, UserRole.RECEIVER],
-            default: UserRole.USER,
+            enum: [UserRole.ADMIN, UserRole.ISSUER, UserRole.RECEIVER, UserRole.APPROVER],
+            default: UserRole.RECEIVER,
         },
     },
     {

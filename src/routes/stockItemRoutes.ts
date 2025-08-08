@@ -1,21 +1,24 @@
 import express from "express";
+
 import {
-    getAllStockItems,
-    getStockItemById,
     createStockItem,
     createStockItems,
-    updateStockItem,
     deleteStockItem,
+    getAllStockItems,
+    getStockItemById,
+    updateStockItem,
 } from "../controllers/stockItemController";
-import validateRequest from "../middleware/validateRequest";
 import authenticateJWT from "../middleware/authMiddleware";
+import validateRequest from "../middleware/validateRequest";
+import validateRole from "../middleware/validateRole";
 import {
-    getStockItemSchema,
     createStockItemSchema,
     createStockItemsSchema,
-    updateStockItemSchema,
+    getStockItemSchema,
     paginationSchema,
+    updateStockItemSchema,
 } from "../schemas/stockItemSchema";
+import { UserRole } from "../enums";
 
 const router = express.Router();
 
@@ -27,6 +30,7 @@ router.get("/:id", validateRequest(getStockItemSchema), getStockItemById);
 router.post(
     "/",
     authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
     (req, res, next) => {
         // Determine if it's a single or multiple stock items based on the request body
         const validationSchema = Array.isArray(req.body) ? createStockItemsSchema : createStockItemSchema;
@@ -42,8 +46,20 @@ router.post(
     }
 );
 
-router.patch("/:id", authenticateJWT, validateRequest(updateStockItemSchema), updateStockItem);
+router.patch(
+    "/:id",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(updateStockItemSchema),
+    updateStockItem
+);
 
-router.delete("/:id", authenticateJWT, validateRequest(getStockItemSchema), deleteStockItem);
+router.delete(
+    "/:id",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(getStockItemSchema),
+    deleteStockItem
+);
 
 export default router;

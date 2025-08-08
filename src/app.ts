@@ -4,7 +4,6 @@ import express from "express";
 
 import errorHandler from "./middleware/errorHandler";
 import imageUploadRoutes from "./routes/imageUploadRoutes";
-import receiverRoutes from "./routes/receiverRoutes";
 import requestRoutes from "./routes/requestRoutes";
 import stockIssueRoutes from "./routes/stockIssueRoutes";
 import stockItemRoutes from "./routes/stockItemRoutes";
@@ -27,7 +26,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", userRoutes);
 app.use("/api/stock-items", stockItemRoutes);
 app.use("/api/stock-modifications", stockModificationRoutes);
-app.use("/api/receivers", receiverRoutes);
 app.use("/api/stock-issues", stockIssueRoutes);
 app.use("/api/vendors", vendorRoutes);
 app.use("/api/requests", requestRoutes);

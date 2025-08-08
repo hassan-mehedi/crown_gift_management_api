@@ -1,23 +1,26 @@
 import express from "express";
+
 import {
     createVendor,
-    getAllVendors,
-    getVendorByPhone,
-    getVendorById,
-    updateVendorByPhone,
-    updateVendorById,
-    deleteVendorByPhone,
     deleteVendorById,
+    deleteVendorByPhone,
+    getAllVendors,
+    getVendorById,
+    getVendorByPhone,
+    updateVendorById,
+    updateVendorByPhone,
 } from "../controllers/vendorController";
-import validateRequest from "../middleware/validateRequest";
+import { UserRole } from "../enums";
 import authenticateJWT from "../middleware/authMiddleware";
+import validateRequest from "../middleware/validateRequest";
+import validateRole from "../middleware/validateRole";
 import {
     createVendorSchema,
-    updateVendorByPhoneSchema,
-    updateVendorByIdSchema,
-    getVendorByPhoneSchema,
     getVendorByIdSchema,
+    getVendorByPhoneSchema,
     paginationSchema,
+    updateVendorByIdSchema,
+    updateVendorByPhoneSchema,
 } from "../schemas/vendorSchema";
 
 const router = express.Router();
@@ -28,10 +31,40 @@ router.get("/phone/:phone", validateRequest(getVendorByPhoneSchema), getVendorBy
 router.get("/id/:id", validateRequest(getVendorByIdSchema), getVendorById);
 
 // Protected routes
-router.post("/", authenticateJWT, validateRequest(createVendorSchema), createVendor);
-router.patch("/phone/:phone", authenticateJWT, validateRequest(updateVendorByPhoneSchema), updateVendorByPhone);
-router.patch("/id/:id", authenticateJWT, validateRequest(updateVendorByIdSchema), updateVendorById);
-router.delete("/phone/:phone", authenticateJWT, validateRequest(getVendorByPhoneSchema), deleteVendorByPhone);
-router.delete("/id/:id", authenticateJWT, validateRequest(getVendorByIdSchema), deleteVendorById);
+router.post(
+    "/",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(createVendorSchema),
+    createVendor
+);
+router.patch(
+    "/phone/:phone",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(updateVendorByPhoneSchema),
+    updateVendorByPhone
+);
+router.patch(
+    "/id/:id",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(updateVendorByIdSchema),
+    updateVendorById
+);
+router.delete(
+    "/phone/:phone",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(getVendorByPhoneSchema),
+    deleteVendorByPhone
+);
+router.delete(
+    "/id/:id",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(getVendorByIdSchema),
+    deleteVendorById
+);
 
 export default router;

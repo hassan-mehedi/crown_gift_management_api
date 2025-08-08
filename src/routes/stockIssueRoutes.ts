@@ -1,22 +1,25 @@
 import express from "express";
+
 import {
+    createStockIssue,
+    deleteStockIssue,
     getAllStockIssues,
     getStockIssueById,
     getStockIssuesByReceiverId,
     getStockIssuesByStockItemId,
-    createStockIssue,
     updateStockIssue,
-    deleteStockIssue,
 } from "../controllers/stockIssueController";
-import validateRequest from "../middleware/validateRequest";
+import { UserRole } from "../enums";
 import authenticateJWT from "../middleware/authMiddleware";
+import validateRequest from "../middleware/validateRequest";
+import validateRole from "../middleware/validateRole";
 import {
-    getStockIssueSchema,
+    createStockIssueSchema,
     getStockIssuesByReceiverSchema,
     getStockIssuesByStockItemSchema,
-    createStockIssueSchema,
-    updateStockIssueSchema,
+    getStockIssueSchema,
     paginationSchema,
+    updateStockIssueSchema,
 } from "../schemas/stockIssueSchema";
 
 const router = express.Router();
@@ -28,10 +31,28 @@ router.get("/receiver/:receiverId", validateRequest(getStockIssuesByReceiverSche
 router.get("/stockItem/:stockItemId", validateRequest(getStockIssuesByStockItemSchema), getStockIssuesByStockItemId);
 
 // Protected routes (require authentication)
-router.post("/", authenticateJWT, validateRequest(createStockIssueSchema), createStockIssue);
+router.post(
+    "/",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(createStockIssueSchema),
+    createStockIssue
+);
 
-router.patch("/:id", authenticateJWT, validateRequest(updateStockIssueSchema), updateStockIssue);
+router.patch(
+    "/:id",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(updateStockIssueSchema),
+    updateStockIssue
+);
 
-router.delete("/:id", authenticateJWT, validateRequest(getStockIssueSchema), deleteStockIssue);
+router.delete(
+    "/:id",
+    authenticateJWT,
+    validateRole([UserRole.ADMIN, UserRole.ISSUER, UserRole.APPROVER]),
+    validateRequest(getStockIssueSchema),
+    deleteStockIssue
+);
 
 export default router;

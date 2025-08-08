@@ -24,8 +24,8 @@ export const getAllRequests = async (req: ExtendedRequest, res: Response, next: 
             filter.status = status;
         }
 
-        // If user is not admin, filter by createdBy
-        if (req.user?.role !== UserRole.ADMIN) {
+        // If user is issuer, then filter by createdBy
+        if (req.user?.role === UserRole.ISSUER) {
             filter.createdBy = req.user?.id;
         }
 
@@ -146,11 +146,6 @@ export const updateRequest = async (req: ExtendedRequest, res: Response, next: N
         const { id } = req.params;
         const { status, comment } = req.body;
 
-        // Check if user is admin
-        if (req.user?.role !== UserRole.ADMIN) {
-            return next(new AppError("Only admins can update requests", 403));
-        }
-
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return next(new AppError("Invalid request ID", 400));
         }
@@ -158,6 +153,14 @@ export const updateRequest = async (req: ExtendedRequest, res: Response, next: N
         const existingRequest = await RequestModel.findById(id);
         if (!existingRequest) {
             return next(new AppError("Request not found", 404));
+        }
+
+        // If the request is already approved or rejected then return an error
+        if (existingRequest.status === ApprovalStatus.APPROVED) {
+            return next(new AppError("Request is already approved", 400));
+        }
+        if (existingRequest.status === ApprovalStatus.REJECTED) {
+            return next(new AppError("Request is already rejected", 400));
         }
 
         // Prepare update data (only allow status and comment updates)

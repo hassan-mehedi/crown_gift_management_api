@@ -28,14 +28,6 @@ export interface StockItem {
     createdBy: string;
 }
 
-export interface Receiver {
-    name: string;
-    phone: string;
-    email: string;
-    department: string;
-    description?: string;
-}
-
 export interface StockIssue {
     stockItemId: string;
     quantity: number;

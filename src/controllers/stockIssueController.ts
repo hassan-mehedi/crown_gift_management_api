@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
+import { NextFunction, Request, Response } from 'express';
+import mongoose from 'mongoose';
 
-import ReceiverModel from "../models/receiverModel";
-import RequestModel from "../models/requestModel";
-import StockIssueModel from "../models/stockIssueModel";
-import StockItemModel from "../models/stockItemModel";
-import { ExtendedRequest } from "../types";
-import AppError from "../utils/appError";
+import RequestModel from '../models/requestModel';
+import StockIssueModel from '../models/stockIssueModel';
+import StockItemModel from '../models/stockItemModel';
+import UserModel from '../models/userModel';
+import { ExtendedRequest } from '../types';
+import AppError from '../utils/appError';
 
 // Get all stock issues with pagination
 export const getAllStockIssues = async (req: Request, res: Response, next: NextFunction) => {
@@ -90,7 +90,7 @@ export const getStockIssuesByReceiverId = async (req: Request, res: Response, ne
         }
 
         // Check if receiver exists
-        const receiver = await ReceiverModel.findById(receiverId);
+        const receiver = await UserModel.findById(receiverId);
         if (!receiver) {
             throw new AppError(`Receiver with ID ${receiverId} not found`, 404);
         }
@@ -190,7 +190,7 @@ export const createStockIssue = async (req: ExtendedRequest, res: Response, next
         if (!mongoose.Types.ObjectId.isValid(stockIssueData.receiverId)) {
             throw new AppError("Invalid receiver ID", 400);
         }
-        const receiver = await ReceiverModel.findById(stockIssueData.receiverId);
+        const receiver = await UserModel.findById(stockIssueData.receiverId);
         if (!receiver) {
             throw new AppError(`Receiver with ID ${stockIssueData.receiverId} not found`, 404);
         }
@@ -255,7 +255,7 @@ const validateReceiver = async (receiverId: string, existingReceiverId: string) 
             throw new AppError("Invalid receiver ID", 400);
         }
 
-        const receiver = await ReceiverModel.findById(receiverId);
+        const receiver = await UserModel.findById(receiverId);
         if (!receiver) {
             throw new AppError(`Receiver with ID ${receiverId} not found`, 404);
         }

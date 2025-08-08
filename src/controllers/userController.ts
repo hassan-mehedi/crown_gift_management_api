@@ -1,10 +1,13 @@
-import { Request, Response, NextFunction } from "express";
-import UserModel from "../models/userModel";
 import bcrypt from "bcrypt";
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+
 import env from "../config/env";
-import { removeSensitiveInfo } from "../utils/userUtils";
+import { UserRole } from "../enums";
+import UserModel from "../models/userModel";
+import { ExtendedRequest } from "../types";
 import AppError from "../utils/appError";
+import { removeSensitiveInfo } from "../utils/userUtils";
 
 // Register a new user
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -137,6 +140,9 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
             updateData.password = await bcrypt.hash(updateData.password, salt);
         }
 
+        // Remove user role from updateData
+        delete updateData.role;
+
         const user = await UserModel.findOneAndUpdate({ phone }, updateData, {
             new: true,
             runValidators: true,
@@ -156,10 +162,44 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     }
 };
 
-// Delete a user
-export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+// Update user role
+export const updateUserRole = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { phone } = req.params;
+        const { role } = req.body;
+
+        const user = await UserModel.findOneAndUpdate(
+            { phone },
+            { role },
+            {
+                new: true,
+                runValidators: true,
+            }
+        ).select("-password");
+
+        if (!user) {
+            throw new AppError(`User with phone ${phone} not found`, 404);
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "User role updated successfully",
+            data: { user },
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Delete a user
+export const deleteUser = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
+    try {
+        const { phone } = req.params;
+
+        // Check if the user is not an Admin or the user themselves
+        if (req.user?.role !== UserRole.ADMIN && req.user?.phone !== phone) {
+            return next(new AppError("You are not authorized to delete this user", 403));
+        }
 
         const user = await UserModel.findOneAndDelete({ phone });
 

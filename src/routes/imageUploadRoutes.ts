@@ -5,13 +5,15 @@ import authenticateJWT from "../middleware/authMiddleware";
 import { upload } from "../middleware/imageUploadHandler";
 import validateRequest from "../middleware/validateRequest";
 import { deleteFilesSchema, getFileSchema, getFilesSchema } from "../schemas/imageUploadSchema";
+import validateRole from "../middleware/validateRole";
+import { UserRole } from "../enums";
 
 const router = express.Router();
 
 // Protected routes (require authentication)
-router.get("/", authenticateJWT, validateRequest(getFilesSchema), getFiles);
+router.get("/", authenticateJWT, validateRole([UserRole.ADMIN]), validateRequest(getFilesSchema), getFiles);
 router.get("/:path", authenticateJWT, validateRequest(getFileSchema), getFileByPath);
 router.post("/upload", authenticateJWT, upload.array("images", 10), uploadImages);
-router.delete("/", authenticateJWT, validateRequest(deleteFilesSchema), deleteFiles);
+router.delete("/", authenticateJWT, validateRole([UserRole.ADMIN]), validateRequest(deleteFilesSchema), deleteFiles);
 
 export default router;

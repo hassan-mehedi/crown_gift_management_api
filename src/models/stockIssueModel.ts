@@ -18,7 +18,7 @@ const stockIssueSchema = new Schema<StockIssueDocument>(
         receiverId: {
             type: String,
             required: true,
-            ref: "Receiver",
+            ref: "User",
         },
         status: {
             type: String,
